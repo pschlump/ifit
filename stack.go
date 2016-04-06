@@ -16,7 +16,7 @@ type NameStackElement struct {
 	S_LineNo int
 	C_LineNo int
 	TF       bool
-	Tag      string
+	Tag      string // name of the item
 }
 type NameStackType struct {
 	Stack []NameStackElement
