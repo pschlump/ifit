@@ -1,0 +1,11 @@
+
+HTML
+<div id="A"></div>
+or
+<div id="B"></div>
+
+JavaScript
+var A = 12;
+
+CSS
+or

@@ -3,6 +3,10 @@
 *.a
 *.so
 
+# Misc
+.bak
+ifit
+
 # Folders
 _obj
 _test
