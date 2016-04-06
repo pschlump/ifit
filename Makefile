@@ -30,6 +30,12 @@ test2:
 	./ifit -i note.2 -o ./out/aa2.out -s sub1.json NameA NameB
 	diff ./out/aa2.out ./ref/aa2.out
 
+test3:
+	go build
+	mkdir -p ./ref ./out
+	./ifit -i note.3 -o ./out/aa3.out -s sub1.json NameA NameB
+	diff ./out/aa3.out ./ref/aa3.out
+
 install: 
 	go build
 	cp ifit ~/bin
