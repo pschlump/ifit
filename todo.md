@@ -1,6 +1,8 @@
 TODO
 ====
 
+0. Documentation on how it works.
+
 Next Up:
 
 1. include File			<!-- !! include file !! -->, <!-- !! require_once file !! -->

@@ -26,6 +26,13 @@ test1:
 	diff ./out/ab.out ./ref/ab.out
 	echo PASS
 
+test8:
+	go build
+	mkdir -p ./ref ./out
+	./ifit -m test -i note.2 -o ./out/test8.out -s sub1.json NameA aa=AaAaAaA
+	diff ./out/test8.out ./ref/test8.out
+	echo PASS
+
 # variable substitution	
 test2:
 	go build

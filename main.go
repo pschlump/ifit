@@ -53,47 +53,48 @@ func init() {
 	hasSub = regexp.MustCompile("\\$\\$[a-zA-Z_][a-zA-Z0-9_]*\\$\\$")
 }
 
-func SetFlag(s string) {
-
-	var name, value string
+func ParseNameValueOpt(s string) (name, value string) {
 	if fv_re.MatchString(s) {
-		// xyzzy - pull out of r.e. match
+		ss := strings.Split(s, "=")
+		name = ss[0]
+		value = ss[1]
 	} else if f_re.MatchString(s) {
 		name = s
 		value = "on"
 	} else {
-		// error
-		return
+		name = s
+		value = "on"
+		fmt.Printf("ifit: Invalid command line options, should be Name or Name=Value, got >%s<\n", s)
 	}
-	SetNameValue(name, value)
+	return
 }
 
-var g_ds map[string]map[string]string
-
-func SetNameValue(name, value string) {
-	if ds, ok := g_ds[*Mode]; ok {
-		ds[name] = value
-		g_ds[*Mode] = ds
-	}
-}
-
-func IsSet(key, name string) bool {
-	if vv, ok := g_ds[key]; ok {
-		if _, ok1 := vv[name]; ok1 {
-			return true
-		}
-	}
-	return false
-}
-
-func IsSetValue(key, name string) string {
-	if vv, ok := g_ds[key]; ok {
-		if ww, ok1 := vv[name]; ok1 {
-			return ww
-		}
-	}
-	return ""
-}
+//var g_ds map[string]map[string]string
+//
+//func SetNameValue(name, value string) {
+//	if ds, ok := g_ds[*Mode]; ok {
+//		ds[name] = value
+//		g_ds[*Mode] = ds
+//	}
+//}
+//
+//func IsSet(key, name string) bool {
+//	if vv, ok := g_ds[key]; ok {
+//		if _, ok1 := vv[name]; ok1 {
+//			return true
+//		}
+//	}
+//	return false
+//}
+//
+//func IsSetValue(key, name string) string {
+//	if vv, ok := g_ds[key]; ok {
+//		if ww, ok1 := vv[name]; ok1 {
+//			return ww
+//		}
+//	}
+//	return ""
+//}
 
 func HasIfItTag(s string) (patternNo int, foundAt int) {
 	for ii, vv := range Pattern {
@@ -150,9 +151,12 @@ func main() {
 			fmt.Fprintf(os.Stderr, "ifit: Warning - mode %s not defined in %s - using an empty configuration\n", *Mode, *SubFN)
 		}
 	}
+
 	for _, vv := range fns {
 		sub[vv] = "on"
-		// xyzzy - parse fns and do name=value and just name at this point
+		name, value := ParseNameValueOpt(vv)
+		godebug.Printf(db2, "Option: [%s] name=[%s] value=[%s]\n", vv, name, value)
+		sub[name] = value
 	}
 
 	outputOn := true
@@ -271,3 +275,4 @@ func main() {
 }
 
 const db1 = false
+const db2 = false
