@@ -1,4 +1,10 @@
 
+#
+# Copyright (C) Philip Schlump, 2016.
+#
+# MIT Licnesed. 
+#
+
 all:
 	go build
 
@@ -23,4 +29,8 @@ test2:
 	mkdir -p ./ref ./out
 	./ifit -i note.2 -o ./out/aa2.out -s sub1.json NameA NameB
 	diff ./out/aa2.out ./ref/aa2.out
+
+install: 
+	go build
+	cp ifit ~/bin
 

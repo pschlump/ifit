@@ -1,8 +1,51 @@
 1. allow nesting
-1. Allow for if-syntax to be other than in column 1
-2. add expressions ( iOS || Android ), ( !XDesktop )
-3. add else / elseif
-4. -s JSON-Hash.json
-	{ "abc": "../abc/" }
-	Substitute for $$abc$$ -> ../abc/
+4. add else 
 
++5. change ifit to have a -M/--mode flag of "dev", "test", "prod" and in the files have a hash of hash -- default to "dev" -- disallow "__comment__"
+so...
+
+	{
+		"Explananation_of_This": "Configuration for iOS in the ./iOS directory",
+		"iOS": "on",
+		"Mobile": "on"
+	}
+
+becomes
+
+	{
+	"__comment__": {
+			"line1":"Configuration for iOS in the ./iOS directory"
+			,"line2":"Copyright (C) Philip Schlump, 2016."
+			,"line3":"MIT Licnesed."
+		}
+	,"dev":
+		{
+			"iOS": "on"
+			,"Mobile": "on"
+			,"DevMode": "on"
+			,"requestMode":"jsonp"
+			,"pathToAesSrpServer":"http://localhost:3118/api/"
+		}
+	,"test":
+		{
+			"iOS": "on"
+			,"Mobile": "on"
+			,"DevMode": "on"
+			,"requestMode":"jsonp"
+			,"pathToAesSrpServer":"http://localhost:3118/api/"
+		}
+	,"prod":
+		{
+			"iOS": "on"
+			,"Mobile": "on"
+			,"ProdMode": "on"
+			,"requestMode":"POST"
+			,"pathToAesSrpServer":"https://www.go-ftp.com/api/"
+		}
+	}
+
+--------------------- --------------------- --------------------- --------------------- --------------------- 
+--------------------- --------------------- --------------------- --------------------- --------------------- 
+
+6. add elseif
+7. add expressions ( iOS || Android ), ( !XDesktop )
