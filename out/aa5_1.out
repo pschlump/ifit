@@ -1,0 +1,15 @@
+
+HTML - Nested ifs with elses
+True Items: COPYRIGHT, LICENSE, NameA, NameB, __DATE__, __FILE__, __Mode__, __Output__, __TIME__, __TSTAMP__, aa, bob
+File: note.5
+
+	NameA true, outer 1 - LineNo: 7
+		<div id="AandB"> LineNo: 9 </div>
+
+	A true, outer 1 - LineNo: 23
+		<div id="AandA"> LineNo: 25 </div>
+
+		<div id="BandB"> LineNo: 35 </div>
+
+		<div id="AandB"> LineNo: 45 </div>
+
