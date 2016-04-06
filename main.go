@@ -190,18 +190,22 @@ func main() {
 			}
 			if itemType == "if" {
 				godebug.Printf(db1, "db: Found *if*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
-				_, inHash := sub[name]
-				// if InArray(name, fns) || inHash {
-				// xyzzy- use function to check -
-				// xyzzy- use Mode to get correct set
-				if inHash {
-					if *Debug {
-						fmt.Printf("Found in array %s\n", name)
+				if outputOn {
+					_, inHash := sub[name]
+					// if InArray(name, fns) || inHash {
+					// xyzzy- use function to check -
+					// xyzzy- use Mode to get correct set
+					if inHash {
+						if *Debug {
+							fmt.Printf("Found in array %s\n", name)
+						}
+						outputOn = true
+						ifStack.Push(line_no, line_no, outputOn, "if") // Push the empty frame - assume output on to start
+					} else {
+						outputOn = false
+						ifStack.Push(line_no, line_no, outputOn, "if") // Push the empty frame - assume output on to start
 					}
-					outputOn = true
-					ifStack.Push(line_no, line_no, outputOn, "if") // Push the empty frame - assume output on to start
 				} else {
-					outputOn = false
 					ifStack.Push(line_no, line_no, outputOn, "if") // Push the empty frame - assume output on to start
 				}
 				godebug.Printf(db1, "db: Found *if*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
@@ -241,4 +245,4 @@ func main() {
 	}
 }
 
-const db1 = true
+const db1 = false
