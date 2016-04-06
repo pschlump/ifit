@@ -26,3 +26,6 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+.old-git
+.old-pw
