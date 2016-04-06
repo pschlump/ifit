@@ -11,10 +11,6 @@ import (
 	"fmt"
 )
 
-// fopen
-// Modifed from: "encoding/json"
-// word parser
-
 type NameStackElement struct {
 	S_LineNo int
 	C_LineNo int

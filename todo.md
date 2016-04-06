@@ -1,14 +1,14 @@
 TODO
 ====
 
-0. Documentation on how it works.
-
 Next Up:
 
 1. include File			<!-- !! include file !! -->, <!-- !! require_once file !! -->
+	use a file stack and push/pop
 2. include search path	<!-- !! search_path ./a ./b ../c !! -->
+	1. Default search path is ./
 
-TOTO Later
+TODO Later
 ----------
 
 3. Add elseif

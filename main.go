@@ -69,33 +69,6 @@ func ParseNameValueOpt(s string) (name, value string) {
 	return
 }
 
-//var g_ds map[string]map[string]string
-//
-//func SetNameValue(name, value string) {
-//	if ds, ok := g_ds[*Mode]; ok {
-//		ds[name] = value
-//		g_ds[*Mode] = ds
-//	}
-//}
-//
-//func IsSet(key, name string) bool {
-//	if vv, ok := g_ds[key]; ok {
-//		if _, ok1 := vv[name]; ok1 {
-//			return true
-//		}
-//	}
-//	return false
-//}
-//
-//func IsSetValue(key, name string) string {
-//	if vv, ok := g_ds[key]; ok {
-//		if ww, ok1 := vv[name]; ok1 {
-//			return ww
-//		}
-//	}
-//	return ""
-//}
-
 func HasIfItTag(s string) (patternNo int, foundAt int) {
 	for ii, vv := range Pattern {
 		if at := strings.Index(s, vv.Pat); at >= 0 {

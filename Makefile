@@ -26,13 +26,6 @@ test1:
 	diff ./out/ab.out ./ref/ab.out
 	echo PASS
 
-test8:
-	go build
-	mkdir -p ./ref ./out
-	./ifit -m test -i note.2 -o ./out/test8.out -s sub1.json NameA aa=AaAaAaA
-	diff ./out/test8.out ./ref/test8.out
-	echo PASS
-
 # variable substitution	
 test2:
 	go build
@@ -41,6 +34,7 @@ test2:
 	diff ./out/aa2.out ./ref/aa2.out
 	echo PASS
 
+# more variable substitution	
 test6:
 	go build
 	mkdir -p ./ref ./out
@@ -91,6 +85,14 @@ test5:
 	diff ./out/aa5_5.out ./ref/aa5_5.out
 	./ifit -m test -i note.5 -o ./out/aa5_6.out -s sub1.json NameC NameA
 	diff ./out/aa5_6.out ./ref/aa5_6.out
+	echo PASS
+
+# Verify works with command line args A=BBB and that the command line args override the in file ones.
+test8:
+	go build
+	mkdir -p ./ref ./out
+	./ifit -m test -i note.2 -o ./out/test8.out -s sub1.json NameA aa=AaAaAaA
+	diff ./out/test8.out ./ref/test8.out
 	echo PASS
 
 install: 
