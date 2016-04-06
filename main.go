@@ -18,22 +18,9 @@ import (
 	"time"
 
 	"github.com/pschlump/filelib" // fopen
-	"github.com/pschlump/json"    // Modifed from: "encoding/json"
-	"github.com/pschlump/pw"      // word parser
+	// Modifed from: "encoding/json"
+	// word parser
 )
-
-var InputFN = flag.String("input", "", "Input Meta File") // 0
-var OutputFN = flag.String("output", "", "Output Code")   // 1
-var SubFN = flag.String("sub", "", "Substution Values")   // 1
-var Mode = flag.String("mode", "", "Mode Values")         // 1
-var Debug = flag.Bool("debug", false, "Debug Flag")       // 2
-func init() {
-	flag.StringVar(InputFN, "i", "", "Input Meta File")
-	flag.StringVar(OutputFN, "o", "", "Output Code")
-	flag.StringVar(SubFN, "s", "", "Substution Values")
-	flag.StringVar(Mode, "m", "", "Mode Values")
-	flag.BoolVar(Debug, "D", false, "Debug Flag")
-}
 
 type PattType struct {
 	Pat      string
@@ -54,24 +41,6 @@ var Pattern = []PattType{
 	PattType{"!! if ", 3, "if"},
 	PattType{"!! end ", 3, "end"},
 	PattType{"!! else ", 3, "else"},
-}
-
-func ParseLineIntoWords(line string) []string {
-	// rv := strings.Fields ( line )
-	Pw := pw.NewParseWords()
-	Pw.SetOptions("C", true, true)
-	Pw.SetLine(line)
-	rv := Pw.GetWords()
-	return rv
-}
-
-// func GetItemN(s,4,"if") {
-func GetItemN(line string, nthItem int) (name string) {
-	w := ParseLineIntoWords(line)
-	if len(w) >= nthItem {
-		name = w[nthItem-1]
-	}
-	return
 }
 
 var fv_re *regexp.Regexp
@@ -134,30 +103,6 @@ func HasIfItTag(s string) (patternNo int, foundAt int) {
 		}
 	}
 	return -1, -1
-}
-
-func InArray(lookFor string, inArr []string) bool {
-	for _, v := range inArr {
-		if lookFor == v {
-			return true
-		}
-	}
-	return false
-}
-
-func JsonStringToString(s string) (theJSON map[string]string, err error) {
-	err = json.Unmarshal([]byte(s), &theJSON)
-	if err != nil {
-		theJSON = make(map[string]string)
-	}
-	return
-}
-
-type NameStackType struct {
-	S_LineNo int
-	C_LineNo int
-	TF       bool
-	Tag      string
 }
 
 func main() {
