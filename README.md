@@ -83,6 +83,18 @@ or
 	}
 	!! end NameD !!  */
 
+
+Please Note
+-----------
+
+Tests are in a `Makefile` and run by 
+
+	$ make test1
+	$ make test2
+	$ make test3
+
+You should see *PASS* at the end of each successful test.
+
 LICENSE
 -------
 
