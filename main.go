@@ -14,6 +14,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -49,7 +50,7 @@ var hasSub *regexp.Regexp
 func init() {
 	fv_re = regexp.MustCompile("([a-zA-Z][a-zA-Z_0-9]*)=(.*)")
 	f_re = regexp.MustCompile("[a-zA-Z][a-zA-Z_0-9]*")
-	hasSub = regexp.MustCompile("\\$\\$[a-zA-Z][a-zA-Z0-9_]*\\$\\$")
+	hasSub = regexp.MustCompile("\\$\\$[a-zA-Z_][a-zA-Z0-9_]*\\$\\$")
 }
 
 func SetFlag(s string) {
@@ -130,6 +131,7 @@ func main() {
 	}
 	defer fo.Close()
 
+	sub_top := make(map[string]map[string]string)
 	sub := make(map[string]string)
 	if *SubFN != "" {
 		s, err := ioutil.ReadFile(*SubFN)
@@ -137,10 +139,15 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error opening substitution JSON file %s, Error: %s\n", *SubFN, err)
 			os.Exit(1)
 		}
-		sub, err = JsonStringToString(string(s))
+		sub_top, err = JsonStringToStringString(string(s))
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error parsing JSON file %s, Error: %s\n", *SubFN, err)
 			os.Exit(1)
+		}
+		var ok bool
+		sub, ok = sub_top[*Mode]
+		if !ok {
+			fmt.Fprintf(os.Stderr, "ifit: Warning - mode %s not defined in %s - using an empty configuration\n", *Mode, *SubFN)
 		}
 	}
 	for _, vv := range fns {
@@ -149,8 +156,8 @@ func main() {
 	}
 
 	outputOn := true
-	ifStack := NewNameStackType()    // Create the stack
-	ifStack.Push(1, 1, outputOn, "") // Push the empty frame - assume output on to start
+	ifStack := NewNameStackType()                   // Create the stack
+	ifStack.Push(1, 1, outputOn, "**main**", false) // Push the empty frame - assume output on to start
 
 	sub["__FILE__"] = *InputFN
 	now := time.Now()
@@ -159,6 +166,18 @@ func main() {
 	sub["__TSTAMP__"] = now.Format(time.RFC3339)
 	sub["__Mode__"] = *Mode
 	sub["__Output__"] = *OutputFN
+	s := ""
+	com := ""
+	strs := make([]string, 0, 20)
+	for ii := range sub {
+		strs = append(strs, ii)
+	}
+	sort.Strings(strs)
+	for _, ii := range strs {
+		s = s + com + ii
+		com = ", "
+	}
+	sub["__TRUE_ITEMS__"] = s
 
 	scanner := bufio.NewScanner(fi)
 	for line_no := 1; scanner.Scan(); line_no++ {
@@ -190,7 +209,7 @@ func main() {
 			}
 			if itemType == "if" {
 				godebug.Printf(db1, "db: Found *if*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
-				if outputOn {
+				if outputOn { // xyzzy - xyzzy - not right.
 					_, inHash := sub[name]
 					// if InArray(name, fns) || inHash {
 					// xyzzy- use function to check -
@@ -200,25 +219,31 @@ func main() {
 							fmt.Printf("Found in array %s\n", name)
 						}
 						outputOn = true
-						ifStack.Push(line_no, line_no, outputOn, "if") // Push the empty frame - assume output on to start
+						ifStack.Push(line_no, line_no, outputOn, name, false) // Push the empty frame - assume output on to start
 					} else {
 						outputOn = false
-						ifStack.Push(line_no, line_no, outputOn, "if") // Push the empty frame - assume output on to start
+						ifStack.Push(line_no, line_no, outputOn, name, false) // Push the empty frame - assume output on to start
 					}
 				} else {
-					ifStack.Push(line_no, line_no, outputOn, "if") // Push the empty frame - assume output on to start
+					ifStack.Push(line_no, line_no, outputOn, name, true) // Push the empty frame - assume output on to start -- xyzzy - nested!
 				}
 				godebug.Printf(db1, "db: Found *if*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
 			}
 			if itemType == "else" {
-				godebug.Printf(db1, "db: Found *else*/top, stack=%d, outputOn=%v, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
+				godebug.Printf(db1, "db: Found *else*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
 				x, err := ifStack.Peek()
+				godebug.Printf(db1, "db: x from Peek on stack = %s\n", godebug.SVar(x))
 				if err != nil {
 					fmt.Fprintf(os.Stderr, "ifit: Error detected on line %d - else found with no if\n", line_no)
 				} else if x.Tag == name {
-					outputOn = !x.TF
+					if !x.Nested {
+						outputOn = !x.TF
+					}
 				} else {
 					fmt.Fprintf(os.Stderr, "ifit: Error detected on line %d - mis matched else or invalid name on else, Started on line %d\n", line_no, x.S_LineNo)
+					fmt.Fprintf(os.Stderr, "ifit: x.Tag = [%s] name = [%s]\n", x.Tag, name)
+					fmt.Fprintf(os.Stderr, "ifit: line = [%s] no = %d\n", line, line_no)
+					ifStack.Dump1()
 				}
 				godebug.Printf(db1, "db: Found *else*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
 			}

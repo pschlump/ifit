@@ -28,6 +28,14 @@ func JsonStringToString(s string) (theJSON map[string]string, err error) {
 	return
 }
 
+func JsonStringToStringString(s string) (theJSON map[string]map[string]string, err error) {
+	err = json.Unmarshal([]byte(s), &theJSON)
+	if err != nil {
+		theJSON = make(map[string]map[string]string)
+	}
+	return
+}
+
 func ParseLineIntoWords(line string) []string {
 	// rv := strings.Fields ( line )
 	Pw := pw.NewParseWords()

@@ -1,28 +1,48 @@
 
-
-HTML - Nested ifs
+HTML - Nested ifs with elses
+True Items: $$__TRUE_ITEMS__$$
+File: $$__FILE__$$
 
 <!-- !! if NameA !! -->
+	NameA true, outer 1 - LineNo: $$__LINE__$$
 	<!-- !! if NameB !! -->
-		<div id="AandB"></div>
+		<div id="AandB"> LineNo: $$__LINE__$$ </div>
+	<!-- !! else NameB !! -->
+		<div id="AandNotB"> LineNo: $$__LINE__$$ </div>
+	<!-- !! end NameB !! -->
+<!-- !! else NameA !! -->
+	Not A - outer  LineNo: $$__LINE__$$ 
+	<!-- !! if NameB !! -->
+		<div id="NotAandB"> LineNo: $$__LINE__$$ </div>
+	<!-- !! else NameB !! -->
+		<div id="NotAandNotB"> LineNo: $$__LINE__$$ </div>
 	<!-- !! end NameB !! -->
 <!-- !! end NameA !! -->
 
 <!-- !! if NameA !! -->
+	A true, outer 1 - LineNo: $$__LINE__$$
 	<!-- !! if NameA !! -->
-		<div id="AandA"></div>
+		<div id="AandA"> LineNo: $$__LINE__$$ </div>
+	<!-- !! else NameA !! -->
+		<div id="AandNotA"> You should never see this  LineNo: $$__LINE__$$ </div>
 	<!-- !! end NameA !! -->
+<!-- !! else NameA !! -->
+	Not A - outer  LineNo: $$__LINE__$$ 2
 <!-- !! end NameA !! -->
 
 <!-- !! if NameB !! -->
 	<!-- !! if NameB !! -->
-		<div id="BandB"></div>
+		<div id="BandB"> LineNo: $$__LINE__$$ </div>
+	<!-- !! else NameB !! -->
+		B and Not B - Never See This LineNo: $$__LINE__$$ 
 	<!-- !! end NameB !! -->
+<!-- !! else NameB !! -->
+	Not B  LineNo: $$__LINE__$$ 
 <!-- !! end NameB !! -->
 
 <!-- !! if NameB !! -->
 	<!-- !! if NameA !! -->
-		<div id="AandB"></div>
+		<div id="AandB"> LineNo: $$__LINE__$$ </div>
 	<!-- !! end NameA !! -->
 <!-- !! end NameB !! -->
 

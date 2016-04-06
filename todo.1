@@ -1,9 +1,3 @@
-1. Add test - nesting (test4)
-1. Add test - else (test5)
-1. allow nesting
-4. add else 
-
---------------------- --------------------- --------------------- --------------------- --------------------- 
 
 +5. change ifit to have a -M/--mode flag of "dev", "test", "prod" and in the files have a hash of hash -- default to "dev" -- disallow "__comment__"
 so...
@@ -50,8 +44,13 @@ becomes
 
 --------------------- --------------------- --------------------- --------------------- --------------------- 
 
-6. add elseif
-7. add expressions ( iOS || Android ), ( !XDesktop )
-7. Add $$__noeol__$$
-7. Allow set of Start/End marker for tokens
+1. include File			<!-- !! include file !! -->, <!-- !! require_once file !! -->
+2. include search path	<!-- !! search_path ./a ./b ../c !! -->
+
+--------------------- --------------------- --------------------- --------------------- --------------------- 
+
+3. Add elseif
+4. Add expressions ( iOS || Android ), ( !XDesktop )
+5. Add $$__noeol__$$
+6. Allow set of Start/End marker for tokens instead of fixed $$ and $$
 

@@ -1,6 +1,14 @@
 {
-	"aa": "[[i am an aa]]",
-	"bob": "[[i am a bob]]",
-	"COPYRIGHT": "Copyright (C) Philip Schlump 2016.",
-	"LICENSE": "MIT Licensed"
+	"test": {
+		"aa": "[[i am an aa]]",
+		"bob": "[[i am a bob]]",
+		"COPYRIGHT": "Copyright (C) Philip Schlump 2016.",
+		"LICENSE": "MIT Licensed"
+	}
+	, "prod": {
+		"aa": "[[Production: i am an aa]]",
+		"bob": "[[Production: i am a bob]]",
+		"COPYRIGHT": "Copyright (C) Philip Schlump 2016.",
+		"LICENSE": "MIT Licensed"
+	}
 }
