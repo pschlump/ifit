@@ -88,5 +88,5 @@ test5:
 
 install: 
 	go build
-	cp ifit -m test ~/bin
+	cp ifit ~/bin
 

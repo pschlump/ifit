@@ -1,0 +1,31 @@
+{
+"__comment__": {
+		"line1":"Configuration for iOS in the ./iOS directory"
+		,"line2":"Copyright (C) Philip Schlump, 2016."
+		,"line3":"MIT Licnesed."
+	}
+,"dev":
+	{
+		"iOS": "on"
+		,"Mobile": "on"
+		,"DevMode": "on"
+		,"requestMode":"jsonp"
+		,"pathToAesSrpServer":"http://localhost:3118/api/"
+	}
+,"test":
+	{
+		"iOS": "on"
+		,"Mobile": "on"
+		,"DevMode": "on"
+		,"requestMode":"jsonp"
+		,"pathToAesSrpServer":"http://localhost:3118/api/"
+	}
+,"prod":
+	{
+		"iOS": "on"
+		,"Mobile": "on"
+		,"ProdMode": "on"
+		,"requestMode":"POST"
+		,"pathToAesSrpServer":"https://www.go-ftp.com/api/"
+	}
+}
