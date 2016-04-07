@@ -1,6 +1,16 @@
 TODO
 ====
 
+Code Cleanup
+------------
+
+1. make stack.go and fstack.go into own sub-packages -- add test code
+1. add test code for lib - make into own package.
+1. Pull more stuff out of main.go and put into lib.go
+
+Add Features
+------------
+
 1. Add elseif
 1. Add expressions ( iOS || Android ), ( !XDesktop )
 1. Add $$__noeol__$$

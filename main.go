@@ -105,7 +105,6 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error opening input file %s, Error: %s\n", *InputFN, err)
 		os.Exit(1)
 	}
-	defer fi.Close()
 	fStack.Push(1, 1, fi, *InputFN) // push the file at this point
 	openedOnece[*InputFN] = true
 
@@ -307,7 +306,7 @@ func main() {
 		}
 
 		// fmt.Printf("AT: %s\n", godebug.LF())
-		// xyzzyInclude - Close file before pop?
+		fi.Close()
 		fStack.Pop() // Pop stack to restore previous file - loop
 
 		if !fStack.IsEmpty() { // Loop until file stack is empty from pop.
@@ -334,7 +333,7 @@ func main() {
 	// fmt.Printf("AT: %s\n", godebug.LF())
 }
 
-const db1 = false
-const db2 = false
-const db3 = false
+const db1 = false // if/else/end
+const db2 = false // command line name=value processing
+const db3 = false // if/else/end - more details
 const db4 = false // include related

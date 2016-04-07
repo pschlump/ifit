@@ -1,7 +1,7 @@
 package main
 
 /*
-Copyright (C) Philip Schlump, 2016.
+Copyright (C) Philip Schlump, 2015-2016.
 
 MIT Licensed.
 */
@@ -13,10 +13,11 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/pschlump/json"
+	"github.com/pschlump/json" // Modifed from: "encoding/json"
 	"github.com/pschlump/pw"
-) // Modifed from: "encoding/json"
+)
 
+// Return true if lookFor is in array inArr
 func InArray(lookFor string, inArr []string) bool {
 	for _, v := range inArr {
 		if lookFor == v {
@@ -26,6 +27,7 @@ func InArray(lookFor string, inArr []string) bool {
 	return false
 }
 
+// Parse JSON string into map[string]string
 func JsonStringToString(s string) (theJSON map[string]string, err error) {
 	err = json.Unmarshal([]byte(s), &theJSON)
 	if err != nil {
@@ -34,6 +36,7 @@ func JsonStringToString(s string) (theJSON map[string]string, err error) {
 	return
 }
 
+// Parse JSON string into map[string]map[string]string
 func JsonStringToStringString(s string) (theJSON map[string]map[string]string, err error) {
 	err = json.Unmarshal([]byte(s), &theJSON)
 	if err != nil {
@@ -42,6 +45,7 @@ func JsonStringToStringString(s string) (theJSON map[string]map[string]string, e
 	return
 }
 
+// Parse a line of text into words
 func ParseLineIntoWords(line string) []string {
 	// rv := strings.Fields ( line )
 	Pw := pw.NewParseWords()
@@ -51,7 +55,7 @@ func ParseLineIntoWords(line string) []string {
 	return rv
 }
 
-// func GetItemN(s,4,"if") {
+// Pull items out of a line and return the nth one
 func GetItemN(line string, nthItem int) (name string) {
 	w := ParseLineIntoWords(line)
 	nthItem--
@@ -61,6 +65,7 @@ func GetItemN(line string, nthItem int) (name string) {
 	return
 }
 
+// Pull items out of a line of text, parse into words and then return the nth... !! marker.
 func GetItemSet(line string, nthItem int) (set []string) {
 	w := ParseLineIntoWords(line)
 	set = make([]string, 0, len(w))
@@ -76,6 +81,7 @@ func GetItemSet(line string, nthItem int) (set []string) {
 	return
 }
 
+// Parse a name or name=value - if value is not specified then "on" is used.
 func ParseNameValueOpt(s string) (name, value string) {
 	if fv_re.MatchString(s) {
 		ss := strings.Split(s, "=")
@@ -91,6 +97,8 @@ func ParseNameValueOpt(s string) (name, value string) {
 	}
 	return
 }
+
+// Convert an array of strings into a comma separated list.
 func CommaList(strs []string) (s string) {
 	s = ""
 	com := ""
@@ -101,6 +109,7 @@ func CommaList(strs []string) (s string) {
 	return
 }
 
+// Sort the keys on a map and return it as an slice of strings
 func KeysSorted(sub map[string]string) (strs []string) {
 	strs = make([]string, 0, 20)
 	for ii := range sub {
@@ -112,7 +121,7 @@ func KeysSorted(sub map[string]string) (strs []string) {
 
 // Use the search path to find a file
 func FindFile(fn string, sp []string) (rv string) {
-	if fn[0:1] == "/" {
+	if filepath.IsAbs(fn) {
 		rv = fn
 		return
 	}
@@ -127,6 +136,7 @@ func FindFile(fn string, sp []string) (rv string) {
 	return fn
 }
 
+// Return true if the file exists
 func Exists(name string) bool {
 	if _, err := os.Stat(name); err != nil {
 		if os.IsNotExist(err) {
