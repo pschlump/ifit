@@ -18,6 +18,7 @@ pre_test:
 
 # basics
 test1: pre_test
+	echo test1
 	./ifit -m test -i note.1 -o ./out/aa.out NameA
 	diff ./out/aa.out ./ref/aa.out
 	./ifit -m test -i note.1 -o ./out/bb.out NameB
@@ -34,12 +35,14 @@ test1: pre_test
 
 # variable substitution	
 test2: pre_test
+	echo test2
 	./ifit -m test -i note.2 -o ./out/aa2.out -s sub1.json NameA NameB
 	diff ./out/aa2.out ./ref/aa2.out
 	echo PASS
 
 # more variable substitution	
 test6: pre_test
+	echo test6
 	./ifit -m prod -i note.2 -o ./out/aa2_test6.out -s sub1.json NameA NameB
 	diff ./out/aa2_test6.out ./ref/aa2_test6.out
 	echo PASS
@@ -47,12 +50,14 @@ test6: pre_test
 
 # markers not in col(1)
 test3: pre_test
+	echo test3
 	./ifit -m test -i note.3 -o ./out/aa3.out -s sub1.json NameA NameB
 	diff ./out/aa3.out ./ref/aa3.out
 	echo PASS
 
 # nested ifs
 test4: pre_test
+	echo test4
 	./ifit -m test -i note.4 -o ./out/aa4_1.out -s sub1.json NameA NameB
 	diff ./out/aa4_1.out ./ref/aa4_1.out
 	./ifit -m test -i note.4 -o ./out/aa4_2.out -s sub1.json NameA 
@@ -69,6 +74,7 @@ test4: pre_test
 
 # test "else"
 test5: pre_test
+	echo test5
 	./ifit -m test -i note.5 -o ./out/aa5_1.out -s sub1.json NameA NameB
 	diff ./out/aa5_1.out ./ref/aa5_1.out
 	./ifit -m test -i note.5 -o ./out/aa5_2.out -s sub1.json NameA 
@@ -85,6 +91,7 @@ test5: pre_test
 
 # test include and set_path
 test7: pre_test
+	echo test7
 	./ifit -m test -i inc.1 -o ./out/inc1.1.out -s sub1.json NameC NameA
 	diff ./out/inc1.1.out ./ref/inc1.1.out
 	./ifit -m test -i inc.2 -o ./out/inc2.1.out -s sub1.json NameC NameA
@@ -93,18 +100,21 @@ test7: pre_test
 
 # Verify works with command line args A=BBB and that the command line args override the in file ones.
 test8: pre_test
+	echo test8
 	./ifit -m test -i note.2 -o ./out/test8.out -s sub1.json NameA aa=AaAaAaA
 	diff ./out/test8.out ./ref/test8.out
 	echo PASS
 
 # test of set_path and include
 test9: pre_test
+	echo test9
 	./ifit -m test -i path.1 -o ./out/test9.out -s sub1.json NameA aa=AaAaAaA
 	diff ./out/test9.out ./ref/test9.out
 	echo PASS
 
 # test define / undef
 test10: pre_test
+	echo test10
 	./ifit -m test -i def-undef.1 -o ./out/test10.out -s sub1.json NameA aa=AaAaAaA
 	diff ./out/test10.out ./ref/test10.out
 	echo PASS

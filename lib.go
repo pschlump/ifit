@@ -9,6 +9,7 @@ MIT Licensed.
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 
@@ -111,8 +112,13 @@ func KeysSorted(sub map[string]string) (strs []string) {
 
 // Use the search path to find a file
 func FindFile(fn string, sp []string) (rv string) {
+	if fn[0:1] == "/" {
+		rv = fn
+		return
+	}
 	for _, vv := range sp {
-		s := vv + "/" + fn
+		s := filepath.Clean(vv + "/" + fn)
+		// fmt.Printf("vv = [%s] fn = [%s] ---- result [%s]\n", vv, fn, s)
 		if Exists(s) {
 			rv = s
 			return

@@ -5,5 +5,6 @@ TODO
 1. Add expressions ( iOS || Android ), ( !XDesktop )
 1. Add $$__noeol__$$
 1. Allow set of Start/End marker for tokens instead of fixed $$ and $$
-1. make define/undef work as a stack of Name Value
+1. make define/undef work as a stack of Name Value like m4
+1. Add in parameters for defined stuff and quotes and non-eval expressions like m4
 

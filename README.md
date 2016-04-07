@@ -1,12 +1,17 @@
 ifit:  A simple tool for manipulating source code with if and substitution
 ==========================================================================
 
+*ifit* pronounced *if* *it* - not pronounced *I* *FIT* (like *I* had a *fit* one day and went off and wrote this -- or 
+*I* am *FIT* and in good shape).  
+
 *ifit* is a little like GNU m4 or the C preprocessor.  It allows you to have source level `if` statements and substitute
 for values to create a configured program.  The indented source is HTML, CSS and JavaScript.  If it were to be used for
 other languages then additional syntax might be needed.
 
 This program was prompted by having a 98% the same set of source code that really couldn't have the last 2%
-at run time.   Thus a tool was born.
+resoled at run time.  
+iOS/Safari required a file that made Android/Chrome break.
+Thus a tool was born. 
 
 Command Line Aruments
 ---------------------
@@ -136,6 +141,24 @@ Name | Description
 `$$__Mode__$$` | Current mode from the `-m` flag
 `$$__Output__$$` | Current output file name
 `$$__TRUE_ITEMS__$$ | Items that are definded to be true via command line or via input file.  In sorted order.
+`$$__OPENED_FILES__$$ | Name of all the files that have been opened after adding the search path.
+`$$__PATH__$$ | Current search path.
+
+Predefined Operators
+--------------------
+
+The following predefined operators:
+
+Name | Description
+:---: | --- 
+`define` | Define a name to be a value.  The same as placing on the command line NAME=Value or in the `-m` file.
+`undef` | Removes a defined value
+`set_path` | Sets the search path for include files
+`include` | Include a file in the middle of the output.
+`include_once` | Include a file, if it has not already been included, in the middle of the output.
+`if` | If the item is defined then include the followin section up to a matching `end` or `else`.
+`end` | end of an if
+`else` | you know.  In the middle of an if with the reversed logic.
 
 Please Note
 -----------
@@ -144,10 +167,8 @@ Tests are in a `Makefile` and run by
 
 	$ make test1
 	$ make test2
-	$ make test3
-	$ make test4
-	$ make test5
-	$ make test6
+	...
+	$ make test10
 
 You should see *PASS* at the end of each successful test.
 

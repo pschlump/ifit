@@ -44,18 +44,23 @@ var Pattern = []PattType{
 	PattType{"<!-- !! include ", 4, "include"},
 	PattType{"// !! include ", 4, "include"},
 	PattType{"/* !! include ", 4, "include"},
+	PattType{"!! include ", 3, "include"},
 	PattType{"<!-- !! include_once ", 4, "include_once"},
 	PattType{"// !! include_once ", 4, "include_once"},
 	PattType{"/* !! include_once ", 4, "include_once"},
+	PattType{"!! include_once ", 3, "include_once"},
 	PattType{"<!-- !! set_path ", -4, "set_path"},
 	PattType{"// !! set_path ", -4, "set_path"},
 	PattType{"/* !! set_path ", -4, "set_path"},
+	PattType{"!! set_path ", -3, "set_path"},
 	PattType{"<!-- !! define ", -4, "define"},
 	PattType{"// !! define ", -4, "define"},
 	PattType{"/* !! define ", -4, "define"},
+	PattType{"!! define ", -3, "define"},
 	PattType{"<!-- !! undef ", 4, "undef"},
 	PattType{"// !! undef ", 4, "undef"},
 	PattType{"/* !! undef ", 4, "undef"},
+	PattType{"!! undef ", 3, "undef"},
 }
 
 var fv_re *regexp.Regexp
@@ -192,27 +197,29 @@ func main() {
 				if *Debug {
 					fmt.Printf("pos=%v %s %s\n", pos, name, itemType)
 				}
-				if itemType == "include" || (itemType == "include_once" && !openedOnece[name]) {
-					godebug.Printf(db4, "Found %s [%s] - opeing file, %s\n", itemType, name, godebug.LF())
-					fStack.SetLineNo(line_no + 1)
-					name = FindFile(name, SearchPath)
-					openedOnece[name] = true
-					ft, err := filelib.Fopen(name, "r") // if it is an "include" then ... open file, push with new line number
-					if err != nil {
-						fmt.Fprintf(os.Stderr, "ifit: Error opening included input file %s, Error: %s\n", name, err)
-					}
-					fStack.Push(1, 1, ft, name) // push the file at this point
-					fi = ft
-					line_no = 0
-					scanner = bufio.NewScanner(fi)
-					fStack.SetScanner(scanner)
-					sub["__FILE__"] = name
-					sub["__LINE__"] = fmt.Sprintf("%d", 1)
-					stkNames := fStack.GetNames() // set __OPENED_FILES__
-					sub["__OPENED_FILES__"] = CommaList(stkNames)
-					if db4 {
-						godebug.Printf(db4, "include - at bottom\n")
-						fStack.Dump1()
+				if itemType == "include" || itemType == "include_once" {
+					fname := FindFile(name, SearchPath)
+					if itemType == "include" || (itemType == "include_once" && !openedOnece[fname]) {
+						godebug.Printf(db4, "Found %s [%s] - opeing file, %s\n", itemType, fname, godebug.LF())
+						fStack.SetLineNo(line_no + 1)
+						openedOnece[fname] = true
+						ft, err := filelib.Fopen(fname, "r") // if it is an "include" then ... open file, push with new line number
+						if err != nil {
+							fmt.Fprintf(os.Stderr, "ifit: Error opening included input file %s, Error: %s\n", fname, err)
+						}
+						fStack.Push(1, 1, ft, fname) // push the file at this point
+						fi = ft
+						line_no = 0
+						scanner = bufio.NewScanner(fi)
+						fStack.SetScanner(scanner)
+						sub["__FILE__"] = fname
+						sub["__LINE__"] = fmt.Sprintf("%d", 1)
+						stkNames := fStack.GetNames() // set __OPENED_FILES__
+						sub["__OPENED_FILES__"] = CommaList(stkNames)
+						if db4 {
+							godebug.Printf(db4, "include - at bottom\n")
+							fStack.Dump1()
+						}
 					}
 				}
 				if itemType == "define" {
