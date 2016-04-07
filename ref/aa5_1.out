@@ -1,7 +1,7 @@
 
 HTML - Nested ifs with elses
 True Items: COPYRIGHT, LICENSE, NameA, NameB, __DATE__, __FILE__, __Mode__, __Output__, __TIME__, __TSTAMP__, aa, bob
-File: note.5
+File: test/note.5
 
 	NameA true, outer 1 - LineNo: 7
 		<div id="AandB"> LineNo: 9 </div>

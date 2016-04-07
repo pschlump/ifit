@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -68,6 +69,7 @@ var f_re *regexp.Regexp
 var hasSub *regexp.Regexp
 var openedOnece map[string]bool // for include_once
 var SearchPath []string = []string{"./"}
+var PathOfInput string = ""
 
 func init() {
 	fv_re = regexp.MustCompile("([a-zA-Z][a-zA-Z_0-9]*)=(.*)")
@@ -107,6 +109,13 @@ func main() {
 	}
 	fStack.Push(1, 1, fi, *InputFN) // push the file at this point
 	openedOnece[*InputFN] = true
+
+	// xyzzy - fix rune if filepath.IsAbs(*InputFN) || strings.Contains(*InputFN, os.PathSeparator) {
+	if filepath.IsAbs(*InputFN) || strings.Contains(*InputFN, "/") {
+		PathOfInput = filepath.Dir(filepath.Clean(*InputFN))
+		PathOfInput += "/"
+		// fmt.Printf("PathOfInput= [%s]\n", PathOfInput)
+	}
 
 	fo, err := filelib.Fopen(*OutputFN, "w")
 	if err != nil {
@@ -197,7 +206,7 @@ func main() {
 					fmt.Printf("pos=%v %s %s\n", pos, name, itemType)
 				}
 				if itemType == "include" || itemType == "include_once" {
-					fname := FindFile(name, SearchPath)
+					fname := FindFile(PathOfInput, name, SearchPath)
 					if itemType == "include" || (itemType == "include_once" && !openedOnece[fname]) {
 						godebug.Printf(db4, "Found %s [%s] - opeing file, %s\n", itemType, fname, godebug.LF())
 						fStack.SetLineNo(line_no + 1)

@@ -120,14 +120,14 @@ func KeysSorted(sub map[string]string) (strs []string) {
 }
 
 // Use the search path to find a file
-func FindFile(fn string, sp []string) (rv string) {
+func FindFile(PathOfInput, fn string, sp []string) (rv string) {
 	if filepath.IsAbs(fn) {
 		rv = fn
 		return
 	}
 	for _, vv := range sp {
-		s := filepath.Clean(vv + "/" + fn)
-		// fmt.Printf("vv = [%s] fn = [%s] ---- result [%s]\n", vv, fn, s)
+		s := filepath.Clean(PathOfInput + "/" + vv + "/" + fn)
+		// fmt.Printf("PathOfInput = [%s] vv = [%s] fn = [%s] ---- result [%s]\n", PathOfInput, vv, fn, s)
 		if Exists(s) {
 			rv = s
 			return

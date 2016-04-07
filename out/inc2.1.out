@@ -1,36 +1,36 @@
-inc.2 1 == 1
+test/inc.2 1 == 1
 
 Test of Include ----------------------------------------------------------------------------------------------------------------------------------------------
 Test of Include ----------------------------------------------------------------------------------------------------------------------------------------------
 
-inc.2 6
+test/inc.2 6
 
-partA.1 partA.1 1
-partA.1 partA.1 2
-partA.1 partA.1 3
+partA.1 test/partA.1 1
+partA.1 test/partA.1 2
+partA.1 test/partA.1 3
 
-inc.2 11
+test/inc.2 11
 
-partB.1 partB.1 1
-partB.1 partB.1 2
-partB.B.1 partB.B.1 1
-partB.B.1 partB.B.1 2
-partB.B.1 partB.B.1 3
-partB.B.1 partB.B.1 4
-partB.B.1 partB.B.1 5
-partB.B.1 partB.B.1 6
-partB.B.1 partB.B.1 7
-partB.B.1 partB.B.1 8
-partB.B.1 partB.B.1 9
-partB.1 partB.1 4
-partB.1 partB.1 5
+partB.1 test/partB.1 1
+partB.1 test/partB.1 2
+partB.B.1 test/partB.B.1 1
+partB.B.1 test/partB.B.1 2
+partB.B.1 test/partB.B.1 3
+partB.B.1 test/partB.B.1 4
+partB.B.1 test/partB.B.1 5
+partB.B.1 test/partB.B.1 6
+partB.B.1 test/partB.B.1 7
+partB.B.1 test/partB.B.1 8
+partB.B.1 test/partB.B.1 9
+partB.1 test/partB.1 4
+partB.1 test/partB.1 5
 
-inc.2 17
+test/inc.2 17
 
-partC.1 partC.1 1
-partC.1 partC.1 2
-partC.1 partC.1 3
+partC.1 test/partC.1 1
+partC.1 test/partC.1 2
+partC.1 test/partC.1 3
 
-inc.2 25
+test/inc.2 25
 
-inc.2 27  == 27
+test/inc.2 27  == 27
