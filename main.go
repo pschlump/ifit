@@ -19,8 +19,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pschlump/filelib"
-	"github.com/pschlump/godebug" // fopen
+	"github.com/pschlump/filelib" // Fopen
+	"github.com/pschlump/godebug" // SVar, LF etc.
 	"github.com/pschlump/ifit/fstk"
 	"github.com/pschlump/ifit/ifitlib"
 	"github.com/pschlump/ifit/stk"

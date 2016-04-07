@@ -16,7 +16,7 @@ import (
 	"strings"
 
 	"github.com/pschlump/json" // Modifed from: "encoding/json"
-	"github.com/pschlump/pw"
+	"github.com/pschlump/pw"   // Parse Words
 )
 
 // Return true if lookFor is in array inArr

@@ -2,12 +2,6 @@ package ifitlib
 
 import "testing"
 
-/*
-
-TODO:
-
-*/
-
 func Test_Exists(t *testing.T) {
 	b := Exists("lib.go")
 	if !b {

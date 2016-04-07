@@ -14,13 +14,13 @@ resoled at run time.  iOS/Safari required a file that made Android/Chrome break.
 Command Line Aruments
 ---------------------
 
-Argument | Long Argument| Description
-:---: | --- | ---
-`-i` | `--input` | Input file
-`-o` | `--output` | Output file
-`-s` | `--sub` | Substitution file in JSON
-`-m` | `--mode` | The subset of the configuration file that will be used, "prod", "dev" etc.
-`-D` | `--debug` | Debug flag true/false
+Argument | Long       | Description
+:---:    | ---------- | --------------------------------------------------------------------
+`-i`     | `--input`  | Input file
+`-o`     | `--output` | Output file
+`-s`     | `--sub`    | Substitution file in JSON
+`-m`     | `--mode`   | The subset of the configuration file that will be used, "prod", "dev" etc.
+`-D`     | `--debug`  | Debug flag true/false
 
 Anny additional arguments are takes as turning on that defined section of code.  For example:
 
@@ -129,44 +129,45 @@ Predefined Values
 
 The following predefined values are set.
 
-Name | Description
-:---: | --- 
-`$$__FILE__$$` | Current Input File Name
-`$$__LINE__$$` | Current Line Number
-`$$__DATE__$$` | Date in ISO format
-`$$__TIME__$$` | 24 hour time in ISO format
-`$$__TSTAMP__$$` | Timestamp in RFC3339 format
-`$$__Mode__$$` | Current mode from the `-m` flag
-`$$__Output__$$` | Current output file name
-`$$__TRUE_ITEMS__$$` | Items that are definded to be true via command line or via input file.  In sorted order.
+Name                   | Description
+:---:                  | -------------------------------------------------------------------------------------------------
+`$$__FILE__$$`         | Current Input File Name
+`$$__LINE__$$`         | Current Line Number
+`$$__DATE__$$`         | Date in ISO, YYYY/MM/DD format
+`$$__TIME__$$`         | 24 hour time in ISO, HH24:MI:SS format
+`$$__TSTAMP__$$`       | Timestamp in RFC3339 format
+`$$__Mode__$$`         | Current mode from the `-m` flag
+`$$__Output__$$`       | Current output file name
+`$$__TRUE_ITEMS__$$`   | Items that are defined to be true via command line or via input file.  In sorted order.
 `$$__OPENED_FILES__$$` | Name of all the files that have been opened after adding the search path.
-`$$__PATH__$$` | Current search path.
+`$$__PATH__$$`         | Current search path.
 
 Predefined Operators
 --------------------
 
 The following predefined operators:
 
-Name | Description
-:---: | --- 
-`define` | Define a name to be a value.  The same as placing on the command line NAME=Value or in the `-m` file.
-`undef` | Removes a defined value
-`set_path` | Sets the search path for include files
-`include` | Include a file in the middle of the output.
+Name           | Description
+:---:          | ---------------------------------------------------------------------------------------------------------------- 
+`define`       | Define a name to be a value.  The same as placing on the command line NAME=Value or in the `-m` file.
+`undef`        | Removes a defined value
+`set_path`     | Sets the search path for include files
+`include`      | Include a file in the middle of the output.
 `include_once` | Include a file, if it has not already been included, in the middle of the output.
-`if` | If the item is defined then include the followin section up to a matching `end` or `else`.
-`end` | end of an if
-`else` | you know.  In the middle of an if with the reversed logic.
+`if`           | If the item is defined then include the following section up to a matching `end` or `else`.
+`end`          | end of an if
+`else`         | you know.  In the middle of an if with the reversed logic.
 
 Please Note
 -----------
 
 Tests are in a `Makefile` and run by 
 
+	$ make test0
 	$ make test1
 	$ make test2
 	...
-	$ make test10
+	$ make test11
 
 You should see *PASS* at the end of each successful test.
 
