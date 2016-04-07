@@ -1,12 +1,19 @@
 TODO
 ====
 
+Documentation
+-------------
+
+1. Add examples
+2. Have somebody edit it
+
 Code Cleanup
 ------------
 
 1. make stack.go and fstack.go into own sub-packages -- add test code
 1. add test code for lib - make into own package.
 1. Pull more stuff out of main.go and put into lib.go
+1. Put test input into a ./test directory
 
 Add Features
 ------------
