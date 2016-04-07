@@ -21,6 +21,9 @@ import (
 
 	"github.com/pschlump/filelib"
 	"github.com/pschlump/godebug" // fopen
+	"github.com/pschlump/ifit/fstk"
+	"github.com/pschlump/ifit/ifitlib"
+	"github.com/pschlump/ifit/stk"
 )
 
 type PattType struct {
@@ -64,20 +67,6 @@ var Pattern = []PattType{
 	PattType{"!! undef ", 3, "undef"},
 }
 
-var fv_re *regexp.Regexp
-var f_re *regexp.Regexp
-var hasSub *regexp.Regexp
-var openedOnece map[string]bool // for include_once
-var SearchPath []string = []string{"./"}
-var PathOfInput string = ""
-
-func init() {
-	fv_re = regexp.MustCompile("([a-zA-Z][a-zA-Z_0-9]*)=(.*)")
-	f_re = regexp.MustCompile("[a-zA-Z][a-zA-Z_0-9]*")
-	hasSub = regexp.MustCompile("\\$\\$[a-zA-Z_][a-zA-Z0-9_]*\\$\\$")
-	openedOnece = make(map[string]bool)
-}
-
 func HasIfItTag(s string) (patternNo int, foundAt int) {
 	for ii, vv := range Pattern {
 		if at := strings.Index(s, vv.Pat); at >= 0 {
@@ -91,6 +80,12 @@ func HasIfItTag(s string) (patternNo int, foundAt int) {
 }
 
 func main() {
+	var openedOnece map[string]bool // for include_once
+	openedOnece = make(map[string]bool)
+	var SearchPath []string = []string{"./"}
+	var PathOfInput string = ""
+	var hasSub *regexp.Regexp
+	hasSub = regexp.MustCompile("\\$\\$[a-zA-Z_][a-zA-Z0-9_]*\\$\\$")
 
 	flag.Parse()
 	fns := flag.Args()
@@ -100,7 +95,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fStack := NewFileStackType()
+	fStack := fstk.NewFileStackType()
 
 	fi, err := filelib.Fopen(*InputFN, "r")
 	if err != nil {
@@ -110,8 +105,8 @@ func main() {
 	fStack.Push(1, 1, fi, *InputFN) // push the file at this point
 	openedOnece[*InputFN] = true
 
-	// xyzzy - fix rune if filepath.IsAbs(*InputFN) || strings.Contains(*InputFN, os.PathSeparator) {
-	if filepath.IsAbs(*InputFN) || strings.Contains(*InputFN, "/") {
+	if filepath.IsAbs(*InputFN) || strings.Contains(*InputFN, string(os.PathSeparator)) {
+		// if filepath.IsAbs(*InputFN) || strings.Contains(*InputFN, "/") {
 		PathOfInput = filepath.Dir(filepath.Clean(*InputFN))
 		PathOfInput += "/"
 		// fmt.Printf("PathOfInput= [%s]\n", PathOfInput)
@@ -133,7 +128,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error opening substitution JSON file %s, Error: %s\n", *SubFN, err)
 			os.Exit(1)
 		}
-		sub_top, err = JsonStringToStringString(string(s))
+		sub_top, err = ifitlib.JsonStringToStringString(string(s))
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error parsing JSON file %s, Error: %s\n", *SubFN, err)
 			os.Exit(1)
@@ -146,14 +141,17 @@ func main() {
 	}
 
 	for _, vv := range fns {
-		sub[vv] = "on"
-		name, value := ParseNameValueOpt(vv)
+		// sub[vv] = "on"
+		name, value, err := ifitlib.ParseNameValueOpt(vv)
+		if err != nil {
+			fmt.Printf("ifit: Invalid command line options. Error: %s Got: %s -- Assuming %s as name with vaolue of 'on'\n", err, vv, vv)
+		}
 		godebug.Printf(db2, "Option: [%s] name=[%s] value=[%s]\n", vv, name, value)
 		sub[name] = value
 	}
 
 	outputOn := true
-	ifStack := NewNameStackType()                   // Create the stack
+	ifStack := stk.NewNameStackType()               // Create the stack
 	ifStack.Push(1, 1, outputOn, "**main**", false) // Push the empty frame - assume output on to start
 
 	sub["__FILE__"] = *InputFN
@@ -163,12 +161,12 @@ func main() {
 	sub["__TSTAMP__"] = now.Format(time.RFC3339)
 	sub["__Mode__"] = *Mode
 	sub["__Output__"] = *OutputFN
-	strs := KeysSorted(sub)
+	strs := ifitlib.KeysSorted(sub)
 	sort.Strings(strs)
-	sub["__TRUE_ITEMS__"] = CommaList(strs)
-	sub["__PATH__"] = CommaList(SearchPath)
+	sub["__TRUE_ITEMS__"] = ifitlib.CommaList(strs)
+	sub["__PATH__"] = ifitlib.CommaList(SearchPath)
 	stkNames := fStack.GetNames()
-	sub["__OPENED_FILES__"] = CommaList(stkNames)
+	sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
 
 	// fmt.Printf("AT: %s\n", godebug.LF())
 	var line_no = 1
@@ -201,12 +199,12 @@ func main() {
 			pos, foundAt := HasIfItTag(line)
 			if pos >= 0 {
 				itemType := Pattern[pos].ItemType
-				name := GetItemN(line[foundAt:], Pattern[pos].NthItem)
+				name := ifitlib.GetItemN(line[foundAt:], Pattern[pos].NthItem)
 				if *Debug {
 					fmt.Printf("pos=%v %s %s\n", pos, name, itemType)
 				}
 				if itemType == "include" || itemType == "include_once" {
-					fname := FindFile(PathOfInput, name, SearchPath)
+					fname := ifitlib.FindFile(PathOfInput, name, SearchPath)
 					if itemType == "include" || (itemType == "include_once" && !openedOnece[fname]) {
 						godebug.Printf(db4, "Found %s [%s] - opeing file, %s\n", itemType, fname, godebug.LF())
 						fStack.SetLineNo(line_no + 1)
@@ -223,7 +221,7 @@ func main() {
 						sub["__FILE__"] = fname
 						sub["__LINE__"] = fmt.Sprintf("%d", 1)
 						stkNames := fStack.GetNames() // set __OPENED_FILES__
-						sub["__OPENED_FILES__"] = CommaList(stkNames)
+						sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
 						if db4 {
 							godebug.Printf(db4, "include - at bottom\n")
 							fStack.Dump1()
@@ -231,7 +229,7 @@ func main() {
 					}
 				}
 				if itemType == "define" {
-					set := GetItemSet(line[foundAt:], -Pattern[pos].NthItem)
+					set := ifitlib.GetItemSet(line[foundAt:], -Pattern[pos].NthItem)
 					if len(set) >= 2 {
 						sub[set[0]] = set[1]
 					} else if len(set) >= 1 {
@@ -247,10 +245,10 @@ func main() {
 				}
 				if itemType == "set_path" {
 					// fmt.Printf("AT: %s\n", godebug.LF())
-					set := GetItemSet(line[foundAt:], -Pattern[pos].NthItem)
+					set := ifitlib.GetItemSet(line[foundAt:], -Pattern[pos].NthItem)
 					SearchPath = set
 					// fmt.Printf("AT: set >%s< %s\n", godebug.SVar(set), godebug.LF())
-					sub["__PATH__"] = CommaList(SearchPath)
+					sub["__PATH__"] = ifitlib.CommaList(SearchPath)
 					// fmt.Printf("AT: %s\n", godebug.LF())
 				}
 				if itemType == "if" {
@@ -329,7 +327,7 @@ func main() {
 			line_no = ff.C_LineNo
 
 			stkNames := fStack.GetNames() // set __OPENED_FILES__
-			sub["__OPENED_FILES__"] = CommaList(stkNames)
+			sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
 
 			if db4 {
 				godebug.Printf(db4, "include - after pop\n")

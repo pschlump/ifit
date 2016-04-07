@@ -1,4 +1,4 @@
-package main
+package stk
 
 /*
 Copyright (C) Philip Schlump, 2016.

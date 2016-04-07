@@ -1,4 +1,4 @@
-package main
+package fstk
 
 /*
 Copyright (C) Philip Schlump, 2016.
@@ -8,13 +8,10 @@ MIT Licensed.
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 )
-
-// fopen
-// Modifed from: "encoding/json"
-// word parser
 
 type FileStackElement struct {
 	S_LineNo int
@@ -45,7 +42,7 @@ func (ns *FileStackType) Push(S, C int, fp *os.File, name string) {
 	}
 }
 
-// var ErrEmptyStack = errors.New("Empty Stack")
+var ErrEmptyStack = errors.New("Empty Stack")
 
 func (ns *FileStackType) Peek() (FileStackElement, error) {
 	if !ns.IsEmpty() {

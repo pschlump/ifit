@@ -1,4 +1,4 @@
-package main
+package ifitlib
 
 /*
 Copyright (C) Philip Schlump, 2015-2016.
@@ -7,9 +7,11 @@ MIT Licensed.
 */
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -67,6 +69,9 @@ func GetItemN(line string, nthItem int) (name string) {
 
 // Pull items out of a line of text, parse into words and then return the nth... !! marker.
 func GetItemSet(line string, nthItem int) (set []string) {
+	if nthItem < 0 {
+		nthItem = -nthItem
+	}
 	w := ParseLineIntoWords(line)
 	set = make([]string, 0, len(w))
 	nthItem--
@@ -81,8 +86,17 @@ func GetItemSet(line string, nthItem int) (set []string) {
 	return
 }
 
+var ErrInvalidNameValueOpt = errors.New("Invalid option, should be Name or Name=Value")
+var fv_re *regexp.Regexp
+var f_re *regexp.Regexp
+
+func init() {
+	fv_re = regexp.MustCompile("([a-zA-Z][a-zA-Z_0-9]*)=(.*)")
+	f_re = regexp.MustCompile("[a-zA-Z][a-zA-Z_0-9]*")
+}
+
 // Parse a name or name=value - if value is not specified then "on" is used.
-func ParseNameValueOpt(s string) (name, value string) {
+func ParseNameValueOpt(s string) (name, value string, err error) {
 	if fv_re.MatchString(s) {
 		ss := strings.Split(s, "=")
 		name = ss[0]
@@ -93,7 +107,7 @@ func ParseNameValueOpt(s string) (name, value string) {
 	} else {
 		name = s
 		value = "on"
-		fmt.Printf("ifit: Invalid command line options, should be Name or Name=Value, got >%s<\n", s)
+		err = ErrInvalidNameValueOpt
 	}
 	return
 }
@@ -125,9 +139,14 @@ func FindFile(PathOfInput, fn string, sp []string) (rv string) {
 		rv = fn
 		return
 	}
+	if PathOfInput == "" {
+		PathOfInput = "./"
+	}
 	for _, vv := range sp {
 		s := filepath.Clean(PathOfInput + "/" + vv + "/" + fn)
-		// fmt.Printf("PathOfInput = [%s] vv = [%s] fn = [%s] ---- result [%s]\n", PathOfInput, vv, fn, s)
+		if db_FindFile {
+			fmt.Printf("PathOfInput = [%s] vv = [%s] fn = [%s] ---- result [%s]\n", PathOfInput, vv, fn, s)
+		}
 		if Exists(s) {
 			rv = s
 			return
@@ -135,6 +154,8 @@ func FindFile(PathOfInput, fn string, sp []string) (rv string) {
 	}
 	return fn
 }
+
+const db_FindFile = false
 
 // Return true if the file exists
 func Exists(name string) bool {

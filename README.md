@@ -190,16 +190,14 @@ TODO
 
 ### Code Cleanup
 
-1. make stack.go and fstack.go into own sub-packages -- add test code 
-1. add test code for lib - make into own package.
-1. Put test input into a ./test directory
+done
 
 ### Add Features
 
-1. Add elseif - Simple
-1. Add expressions ( iOS || Android ), ( !XDesktop ) - Medium
-1. Add `$$__noeol__$$` - Hm....
-1. Allow set of Start/End marker for tokens instead of fixed `$$` and `$$` - Medium
 1. make define/undef work as a stack of Name Value like m4 - Simple
-1. Add in parameters for defined stuff and quotes and non-eval expressions like m4 - Hard
+2. Add elseif - Simple
+3. Add expressions ( iOS || Android ), ( !XDesktop ) - Medium
+9. Add `$$__noeol__$$` - Hm....
+9. Allow set of Start/End marker for tokens instead of fixed `$$` and `$$` - Medium
+9. Add in parameters for defined stuff and quotes and non-eval expressions like m4 - Hard
 
