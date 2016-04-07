@@ -8,9 +8,9 @@
 all:
 	go build
 
-.PHONY: test pre_test test1 test2 test3 test4 test5 test6 test7 test8
+.PHONY: test pre_test test1 test2 test3 test4 test5 test6 test7 test8 test9
 
-test: test1 test2 test3 test4 test5 test6 test7 test8
+test: test1 test2 test3 test4 test5 test6 test7 test8 test9
 
 pre_test:
 	go build
@@ -87,12 +87,20 @@ test5: pre_test
 test7: pre_test
 	./ifit -m test -i inc.1 -o ./out/inc1.1.out -s sub1.json NameC NameA
 	diff ./out/inc1.1.out ./ref/inc1.1.out
+	./ifit -m test -i inc.2 -o ./out/inc2.1.out -s sub1.json NameC NameA
+	diff ./out/inc2.1.out ./ref/inc2.1.out
 	echo PASS
 
 # Verify works with command line args A=BBB and that the command line args override the in file ones.
 test8: pre_test
 	./ifit -m test -i note.2 -o ./out/test8.out -s sub1.json NameA aa=AaAaAaA
 	diff ./out/test8.out ./ref/test8.out
+	echo PASS
+
+# test of set_path and include
+test9: pre_test
+	./ifit -m test -i path.1 -o ./out/test9.out -s sub1.json NameA aa=AaAaAaA
+	diff ./out/test9.out ./ref/test9.out
 	echo PASS
 
 install: 

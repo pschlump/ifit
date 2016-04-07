@@ -1,0 +1,15 @@
+./a, ./b, ./c, ./d, ./e
+in a - inc file
+in a - inc file
+in a - inc file
+in a - inc file
+
+./b, ./c, ./d, ./e, ./a
+in b - inc file
+in b - inc file
+in b - inc file
+in b - inc file
+
+./c, ./d, ./e
+in d - inc file
+in d - inc file

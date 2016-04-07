@@ -151,15 +151,15 @@ func main() {
 	stkNames := fStack.GetNames()
 	sub["__OPENED_FILES__"] = CommaList(stkNames)
 
-	fmt.Printf("AT: %s\n", godebug.LF())
+	// fmt.Printf("AT: %s\n", godebug.LF())
 	var line_no = 1
 	scanner := bufio.NewScanner(fi)
 	fStack.SetScanner(scanner)
 	for !fStack.IsEmpty() { // Loop until file stack is empty from pop.
 
-		fmt.Printf("AT: %s\n", godebug.LF())
+		// fmt.Printf("AT: %s\n", godebug.LF())
 		for ; scanner.Scan(); line_no++ {
-			fmt.Printf("AT: -at top of per-line - %s\n", godebug.LF())
+			// fmt.Printf("AT: -at top of per-line - %s\n", godebug.LF())
 			sub["__LINE__"] = fmt.Sprintf("%d", line_no)
 			line := scanner.Text()
 			if *Debug {
@@ -189,6 +189,7 @@ func main() {
 				if itemType == "include" || (itemType == "include_once" && !openedOnece[name]) {
 					godebug.Printf(db4, "Found %s [%s] - opeing file, %s\n", itemType, name, godebug.LF())
 					fStack.SetLineNo(line_no + 1)
+					name = FindFile(name, SearchPath)
 					openedOnece[name] = true
 					ft, err := filelib.Fopen(name, "r") // if it is an "include" then ... open file, push with new line number
 					if err != nil {
@@ -209,8 +210,12 @@ func main() {
 					}
 				}
 				if itemType == "set_path" {
-					fmt.Printf("ERRROR -- not implemented yet!, %s\n", godebug.LF())
-					os.Exit(1)
+					// fmt.Printf("AT: %s\n", godebug.LF())
+					set := GetItemSet(line[foundAt:], -Pattern[pos].NthItem)
+					SearchPath = set
+					// fmt.Printf("AT: set >%s< %s\n", godebug.SVar(set), godebug.LF())
+					sub["__PATH__"] = CommaList(SearchPath)
+					// fmt.Printf("AT: %s\n", godebug.LF())
 				}
 				if itemType == "if" {
 					godebug.Printf(db1, "db: Found *if*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
@@ -273,12 +278,12 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("AT: %s\n", godebug.LF())
+		// fmt.Printf("AT: %s\n", godebug.LF())
 		// xyzzyInclude - Close file before pop?
 		fStack.Pop() // Pop stack to restore previous file - loop
 
 		if !fStack.IsEmpty() { // Loop until file stack is empty from pop.
-			fmt.Printf("AT: %s\n", godebug.LF())
+			// fmt.Printf("AT: %s\n", godebug.LF())
 			ff, _ := fStack.Peek() // peek to get name/line no back
 
 			fi = ff.File
@@ -296,12 +301,12 @@ func main() {
 			}
 		}
 
-		fmt.Printf("AT: %s\n", godebug.LF())
+		// fmt.Printf("AT: %s\n", godebug.LF())
 	}
-	fmt.Printf("AT: %s\n", godebug.LF())
+	// fmt.Printf("AT: %s\n", godebug.LF())
 }
 
 const db1 = false
 const db2 = false
 const db3 = false
-const db4 = true // include related
+const db4 = false // include related

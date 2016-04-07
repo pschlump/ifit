@@ -8,6 +8,7 @@ MIT Licensed.
 
 import (
 	"fmt"
+	"os"
 	"sort"
 	"strings"
 
@@ -52,8 +53,24 @@ func ParseLineIntoWords(line string) []string {
 // func GetItemN(s,4,"if") {
 func GetItemN(line string, nthItem int) (name string) {
 	w := ParseLineIntoWords(line)
-	if len(w) >= nthItem {
-		name = w[nthItem-1]
+	nthItem--
+	if nthItem < len(w) && nthItem >= 0 {
+		name = w[nthItem]
+	}
+	return
+}
+
+func GetItemSet(line string, nthItem int) (set []string) {
+	w := ParseLineIntoWords(line)
+	set = make([]string, 0, len(w))
+	nthItem--
+	// fmt.Printf("nthItem (after sub = %d, words are >%s<\n", nthItem, godebug.SVar(w))
+	for ; nthItem < len(w); nthItem++ {
+		name := w[nthItem]
+		if name == "!!" {
+			break
+		}
+		set = append(set, name)
 	}
 	return
 }
@@ -90,4 +107,25 @@ func KeysSorted(sub map[string]string) (strs []string) {
 	}
 	sort.Strings(strs)
 	return
+}
+
+// Use the search path to find a file
+func FindFile(fn string, sp []string) (rv string) {
+	for _, vv := range sp {
+		s := vv + "/" + fn
+		if Exists(s) {
+			rv = s
+			return
+		}
+	}
+	return fn
+}
+
+func Exists(name string) bool {
+	if _, err := os.Stat(name); err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
 }
