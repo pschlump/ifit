@@ -1,14 +1,14 @@
 ifit:  A simple tool for manipulating source code with if and substitution
 ==========================================================================
 
-*ifit* pronounced *if* *it* - not pronounced *I* *FIT* (like *I* had a *fit* one day and went off and wrote this -- or 
+*ifit* pronounced *if* *it* - not pronounced *I* *FIT* (not like *I* had a *fit* one day and went off and wrote this -- and not like 
 *I* am *FIT* and in good shape).  
 
 *ifit* is a little like GNU m4 or the C preprocessor.  It allows you to have source level `if` statements and substitute
 for values to create a configured program.  The indented source is HTML, CSS and JavaScript.  If it were to be used for
 other languages then additional syntax might be needed.
 
-This program was prompted by having a 98% the same set of source code that really couldn't have the last 2%
+This program was prompted by having a project with 98% the same set of source code that really couldn't have the last 2%
 resoled at run time.  iOS/Safari required a file that made Android/Chrome break.  Thus a tool was born. 
 
 Command Line Aruments
