@@ -8,10 +8,16 @@
 all:
 	go build
 
-# basics
-test1:
+.PHONY: test pre_test test1 test2 test3 test4 test5 test6 test7 test8
+
+test: test1 test2 test3 test4 test5 test6 test7 test8
+
+pre_test:
 	go build
 	mkdir -p ./ref ./out
+
+# basics
+test1: pre_test
 	./ifit -m test -i note.1 -o ./out/aa.out NameA
 	diff ./out/aa.out ./ref/aa.out
 	./ifit -m test -i note.1 -o ./out/bb.out NameB
@@ -27,34 +33,26 @@ test1:
 	echo PASS
 
 # variable substitution	
-test2:
-	go build
-	mkdir -p ./ref ./out
+test2: pre_test
 	./ifit -m test -i note.2 -o ./out/aa2.out -s sub1.json NameA NameB
 	diff ./out/aa2.out ./ref/aa2.out
 	echo PASS
 
 # more variable substitution	
-test6:
-	go build
-	mkdir -p ./ref ./out
+test6: pre_test
 	./ifit -m prod -i note.2 -o ./out/aa2_test6.out -s sub1.json NameA NameB
 	diff ./out/aa2_test6.out ./ref/aa2_test6.out
 	echo PASS
 
 
 # markers not in col(1)
-test3:
-	go build
-	mkdir -p ./ref ./out
+test3: pre_test
 	./ifit -m test -i note.3 -o ./out/aa3.out -s sub1.json NameA NameB
 	diff ./out/aa3.out ./ref/aa3.out
 	echo PASS
 
 # nested ifs
-test4:
-	go build
-	mkdir -p ./ref ./out
+test4: pre_test
 	./ifit -m test -i note.4 -o ./out/aa4_1.out -s sub1.json NameA NameB
 	diff ./out/aa4_1.out ./ref/aa4_1.out
 	./ifit -m test -i note.4 -o ./out/aa4_2.out -s sub1.json NameA 
@@ -70,9 +68,7 @@ test4:
 	echo PASS
 
 # test "else"
-test5:
-	go build
-	mkdir -p ./ref ./out
+test5: pre_test
 	./ifit -m test -i note.5 -o ./out/aa5_1.out -s sub1.json NameA NameB
 	diff ./out/aa5_1.out ./ref/aa5_1.out
 	./ifit -m test -i note.5 -o ./out/aa5_2.out -s sub1.json NameA 
@@ -87,10 +83,14 @@ test5:
 	diff ./out/aa5_6.out ./ref/aa5_6.out
 	echo PASS
 
+# test include and set_path
+test7: pre_test
+	./ifit -m test -i inc.1 -o ./out/inc1.1.out -s sub1.json NameC NameA
+	diff ./out/inc1.1.out ./ref/inc1.1.out
+	echo PASS
+
 # Verify works with command line args A=BBB and that the command line args override the in file ones.
-test8:
-	go build
-	mkdir -p ./ref ./out
+test8: pre_test
 	./ifit -m test -i note.2 -o ./out/test8.out -s sub1.json NameA aa=AaAaAaA
 	diff ./out/test8.out ./ref/test8.out
 	echo PASS

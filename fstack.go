@@ -7,6 +7,7 @@ MIT Licensed.
 */
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 )
@@ -20,6 +21,7 @@ type FileStackElement struct {
 	C_LineNo int
 	File     *os.File
 	Name     string // name of the item
+	Scanner  *bufio.Scanner
 }
 type FileStackType struct {
 	Stack []FileStackElement
@@ -37,9 +39,9 @@ func (ns *FileStackType) IsEmpty() bool {
 func (ns *FileStackType) Push(S, C int, fp *os.File, name string) {
 	ns.Top++
 	if len(ns.Stack) <= ns.Top {
-		ns.Stack = append(ns.Stack, FileStackElement{S, C, fp, name})
+		ns.Stack = append(ns.Stack, FileStackElement{S, C, fp, name, nil})
 	} else {
-		ns.Stack[ns.Top] = FileStackElement{S, C, fp, name}
+		ns.Stack[ns.Top] = FileStackElement{S, C, fp, name, nil}
 	}
 }
 
@@ -68,7 +70,28 @@ func (ns *FileStackType) Dump1() {
 	fmt.Printf("  Top = %d\n", ns.Top)
 	for ii, vv := range ns.Stack {
 		if ii <= ns.Top {
-			fmt.Printf("   %d: Name [%s] LineNo: %d\n", ii, vv.Name, vv.S_LineNo)
+			fmt.Printf("   %d: Name [%s] LineNo: %d\n", ii, vv.Name, vv.C_LineNo)
 		}
+	}
+}
+
+func (ns *FileStackType) GetNames() (names []string) {
+	for ii, vv := range ns.Stack {
+		if ii <= ns.Top {
+			names = append(names, vv.Name)
+		}
+	}
+	return
+}
+
+func (ns *FileStackType) SetLineNo(n int) {
+	if !ns.IsEmpty() {
+		ns.Stack[ns.Top].C_LineNo = n
+	}
+}
+
+func (ns *FileStackType) SetScanner(ss *bufio.Scanner) {
+	if !ns.IsEmpty() {
+		ns.Stack[ns.Top].Scanner = ss
 	}
 }

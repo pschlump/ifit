@@ -1,0 +1,36 @@
+inc.1 1 == 1
+
+Test of Include ----------------------------------------------------------------------------------------------------------------------------------------------
+Test of Include ----------------------------------------------------------------------------------------------------------------------------------------------
+
+inc.1 6
+
+partA.1 partA.1 1
+partA.1 partA.1 2
+partA.1 partA.1 3
+
+inc.1 10
+
+partB.1 partB.1 1
+partB.1 partB.1 2
+partB.B.1 partB.B.1 1
+partB.B.1 partB.B.1 2
+partB.B.1 partB.B.1 3
+partB.B.1 partB.B.1 4
+partB.B.1 partB.B.1 5
+partB.B.1 partB.B.1 6
+partB.B.1 partB.B.1 7
+partB.B.1 partB.B.1 8
+partB.B.1 partB.B.1 9
+partB.1 partB.1 4
+partB.1 partB.1 5
+
+inc.1 14
+
+partC.1 partC.1 1
+partC.1 partC.1 2
+partC.1 partC.1 3
+
+inc.1 18
+
+inc.1 20 == 20
