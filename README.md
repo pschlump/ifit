@@ -9,9 +9,7 @@ for values to create a configured program.  The indented source is HTML, CSS and
 other languages then additional syntax might be needed.
 
 This program was prompted by having a 98% the same set of source code that really couldn't have the last 2%
-resoled at run time.  
-iOS/Safari required a file that made Android/Chrome break.
-Thus a tool was born. 
+resoled at run time.  iOS/Safari required a file that made Android/Chrome break.  Thus a tool was born. 
 
 Command Line Aruments
 ---------------------
@@ -181,4 +179,28 @@ Author
 ------
 
 By Philip Schlump.
+
+TODO
+----
+
+### Documentation
+
+1. Add examples
+2. Have somebody edit it
+
+### Code Cleanup
+
+1. make stack.go and fstack.go into own sub-packages -- add test code
+1. add test code for lib - make into own package.
+1. Pull more stuff out of main.go and put into lib.go
+1. Put test input into a ./test directory
+
+### Add Features
+
+1. Add elseif
+1. Add expressions ( iOS || Android ), ( !XDesktop )
+1. Add $$__noeol__$$
+1. Allow set of Start/End marker for tokens instead of fixed $$ and $$
+1. make define/undef work as a stack of Name Value like m4
+1. Add in parameters for defined stuff and quotes and non-eval expressions like m4
 
