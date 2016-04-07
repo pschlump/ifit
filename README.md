@@ -138,9 +138,9 @@ Name | Description
 `$$__TSTAMP__$$` | Timestamp in RFC3339 format
 `$$__Mode__$$` | Current mode from the `-m` flag
 `$$__Output__$$` | Current output file name
-`$$__TRUE_ITEMS__$$ | Items that are definded to be true via command line or via input file.  In sorted order.
-`$$__OPENED_FILES__$$ | Name of all the files that have been opened after adding the search path.
-`$$__PATH__$$ | Current search path.
+`$$__TRUE_ITEMS__$$` | Items that are definded to be true via command line or via input file.  In sorted order.
+`$$__OPENED_FILES__$$` | Name of all the files that have been opened after adding the search path.
+`$$__PATH__$$` | Current search path.
 
 Predefined Operators
 --------------------
