@@ -8,9 +8,9 @@
 all:
 	go build
 
-.PHONY: test pre_test test1 test2 test3 test4 test5 test6 test7 test8 test9
+.PHONY: test pre_test test1 test2 test3 test4 test5 test6 test7 test8 test9 test10
 
-test: test1 test2 test3 test4 test5 test6 test7 test8 test9
+test: test1 test2 test3 test4 test5 test6 test7 test8 test9 test10
 
 pre_test:
 	go build
@@ -101,6 +101,12 @@ test8: pre_test
 test9: pre_test
 	./ifit -m test -i path.1 -o ./out/test9.out -s sub1.json NameA aa=AaAaAaA
 	diff ./out/test9.out ./ref/test9.out
+	echo PASS
+
+# test define / undef
+test10: pre_test
+	./ifit -m test -i def-undef.1 -o ./out/test10.out -s sub1.json NameA aa=AaAaAaA
+	diff ./out/test10.out ./ref/test10.out
 	echo PASS
 
 install: 

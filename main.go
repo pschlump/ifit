@@ -50,6 +50,12 @@ var Pattern = []PattType{
 	PattType{"<!-- !! set_path ", -4, "set_path"},
 	PattType{"// !! set_path ", -4, "set_path"},
 	PattType{"/* !! set_path ", -4, "set_path"},
+	PattType{"<!-- !! define ", -4, "define"},
+	PattType{"// !! define ", -4, "define"},
+	PattType{"/* !! define ", -4, "define"},
+	PattType{"<!-- !! undef ", 4, "undef"},
+	PattType{"// !! undef ", 4, "undef"},
+	PattType{"/* !! undef ", 4, "undef"},
 }
 
 var fv_re *regexp.Regexp
@@ -207,6 +213,21 @@ func main() {
 					if db4 {
 						godebug.Printf(db4, "include - at bottom\n")
 						fStack.Dump1()
+					}
+				}
+				if itemType == "define" {
+					set := GetItemSet(line[foundAt:], -Pattern[pos].NthItem)
+					if len(set) >= 2 {
+						sub[set[0]] = set[1]
+					} else if len(set) >= 1 {
+						sub[set[0]] = "on"
+					} else {
+						fmt.Printf("ifit: Syntax error, define needs a name to define, line %d\n", line_no)
+					}
+				}
+				if itemType == "undef" {
+					if _, ok := sub[name]; ok {
+						delete(sub, name)
 					}
 				}
 				if itemType == "set_path" {
