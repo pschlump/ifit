@@ -11,13 +11,19 @@ DIFF=diff
 all:
 	go build
 
-.PHONY: test pre_test test1 test2 test3 test4 test5 test6 test7 test8 test9 test10
+.PHONY: test pre_test test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 test10
 
-test: test1 test2 test3 test4 test5 test6 test7 test8 test9 test10
+test: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 test10
 
 pre_test:
 	go build
 	mkdir -p ./ref ./out
+
+# Test library
+test0:
+	( cd ./ifitlib ; go test )
+	( cd ./stk ; go test )
+	( cd ./fstk ; go test )
 
 # basics
 test1: pre_test

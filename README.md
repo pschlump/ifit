@@ -190,7 +190,8 @@ TODO
 
 ### Code Cleanup
 
-done
+1. Add tests for ./stk
+1. Add tests for ./fstk
 
 ### Add Features
 

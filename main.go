@@ -229,7 +229,7 @@ func main() {
 					}
 				}
 				if itemType == "define" {
-					set := ifitlib.GetItemSet(line[foundAt:], -Pattern[pos].NthItem)
+					set := ifitlib.GetItemSet(line[foundAt:], Pattern[pos].NthItem)
 					if len(set) >= 2 {
 						sub[set[0]] = set[1]
 					} else if len(set) >= 1 {
@@ -245,7 +245,7 @@ func main() {
 				}
 				if itemType == "set_path" {
 					// fmt.Printf("AT: %s\n", godebug.LF())
-					set := ifitlib.GetItemSet(line[foundAt:], -Pattern[pos].NthItem)
+					set := ifitlib.GetItemSet(line[foundAt:], Pattern[pos].NthItem)
 					SearchPath = set
 					// fmt.Printf("AT: set >%s< %s\n", godebug.SVar(set), godebug.LF())
 					sub["__PATH__"] = ifitlib.CommaList(SearchPath)
