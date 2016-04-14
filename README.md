@@ -186,8 +186,8 @@ TODO
 
 ### Documentation
 
-1. Add examples
-2. Have somebody edit the documentation to improve it
+1. Add examples in this file
+2. Have somebody edit the documentation (this file) to improve it
 
 ### Code Cleanup
 
