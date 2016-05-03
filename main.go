@@ -32,6 +32,11 @@ type PattType struct {
 	ItemType string
 }
 
+/*
+As a Comment in Markdown:
+[//]: # (This may be the most platform independent comment)
+[//]: # ( include File )
+*/
 var Pattern = []PattType{
 	PattType{"<!-- !! if ", 4, "if"},
 	PattType{"<!-- !! end ", 4, "end"},
@@ -45,10 +50,12 @@ var Pattern = []PattType{
 	PattType{"!! if ", 3, "if"},
 	PattType{"!! end ", 3, "end"},
 	PattType{"!! else ", 3, "else"},
+	PattType{"[//]: # ( include ", 5, "include"},
 	PattType{"<!-- !! include ", 4, "include"},
 	PattType{"// !! include ", 4, "include"},
 	PattType{"/* !! include ", 4, "include"},
 	PattType{"!! include ", 3, "include"},
+	PattType{"[//]: # ( include_once ", 5, "include_once"},
 	PattType{"<!-- !! include_once ", 4, "include_once"},
 	PattType{"// !! include_once ", 4, "include_once"},
 	PattType{"/* !! include_once ", 4, "include_once"},

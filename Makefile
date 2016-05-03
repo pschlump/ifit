@@ -11,9 +11,9 @@ DIFF=diff
 all:
 	go build
 
-.PHONY: test pre_test test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 test10 test11 test12
+.PHONY: test pre_test test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 test10 test11 test12 test14
 
-test: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 test10 test11 test12
+test: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 test10 test11 test12 test14
 
 pre_test:
 	go build
@@ -136,6 +136,12 @@ test11: pre_test
 	echo PASS
 
 test12:
+	echo test10
+	./ifit -m test -i test/inc.4 -o ./out/test12.out -s sub1.json NameA aa=AaAaAaA
+	$(DIFF) ./out/test12.out ./ref/test12.out
+	echo PASS
+
+test14:
 	echo PASS
 
 install: 
