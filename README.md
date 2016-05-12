@@ -1,6 +1,9 @@
 ifit:  A simple tool for manipulating source code with if and substitution
 ==========================================================================
 
+ [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/pschlump/Go-FTL/master/LICENSE)
+
+
 *ifit* pronounced *if* *it* - not pronounced *I* *FIT* (not like *I* had a *fit* one day and went off and wrote this -- and not like 
 *I* am *FIT* and in good shape).  
 
