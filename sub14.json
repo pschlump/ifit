@@ -1,0 +1,11 @@
+{
+	"$base$": {
+		"bv": "correct"
+	}
+	,"dev": {
+		"other": "ok bv not set, from base"
+	}
+	,"test": {
+		"bv": "test-move-bv"
+	}
+}
