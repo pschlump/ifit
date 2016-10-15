@@ -141,8 +141,18 @@ func main() {
 			os.Exit(1)
 		}
 		var ok bool
+		// xyzzy - this is the place to add $base$
+		base, haveBase := sub_top["$base$"]
 		sub, ok = sub_top[*Mode]
-		if !ok {
+		if haveBase && ok {
+			for name, val := range base {
+				if _, itemOk := sub[name]; !itemOk {
+					sub[name] = val
+				}
+			}
+		} else if haveBase {
+			sub = base
+		} else {
 			fmt.Fprintf(os.Stderr, "ifit: Warning - mode %s not defined in %s - using an empty configuration\n", *Mode, *SubFN)
 		}
 	}
