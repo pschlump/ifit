@@ -19,6 +19,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pschlump/MiscLib"
 	"github.com/pschlump/filelib" // Fopen
 	"github.com/pschlump/godebug" // SVar, LF etc.
 	"github.com/pschlump/ifit/fstk"
@@ -106,7 +107,7 @@ func main() {
 
 	fi, err := filelib.Fopen(*InputFN, "r")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error opening input file %s, Error: %s\n", *InputFN, err)
+		fmt.Fprintf(os.Stderr, "%sError: opening input file %s, Error: %s%s\n", MiscLib.ColorRed, *InputFN, err, MiscLib.ColorReset)
 		os.Exit(1)
 	}
 	fStack.Push(1, 1, fi, *InputFN) // push the file at this point
@@ -121,7 +122,7 @@ func main() {
 
 	fo, err := filelib.Fopen(*OutputFN, "w")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error opening output file %s, Error: %s\n", *OutputFN, err)
+		fmt.Fprintf(os.Stderr, "%sError: opening output file %s, Error: %s%s\n", MiscLib.ColorRed, *OutputFN, err, MiscLib.ColorReset)
 		os.Exit(1)
 	}
 	defer fo.Close()
@@ -132,12 +133,12 @@ func main() {
 	if *SubFN != "" {
 		s, err := ioutil.ReadFile(*SubFN)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error opening substitution JSON file %s, Error: %s\n", *SubFN, err)
+			fmt.Fprintf(os.Stderr, "%sError: opening substitution JSON file %s, Error: %s%s\n", MiscLib.ColorRed, *SubFN, err, MiscLib.ColorReset)
 			os.Exit(1)
 		}
 		sub_top, err = ifitlib.JsonStringToStringString(string(s))
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error parsing JSON file %s, Error: %s\n", *SubFN, err)
+			fmt.Fprintf(os.Stderr, "%sError: parsing JSON file %s, Error: %s%s\n", MiscLib.ColorRed, *SubFN, err, MiscLib.ColorReset)
 			os.Exit(1)
 		}
 		var ok bool
@@ -154,7 +155,7 @@ func main() {
 			sub = base
 		} else if ok {
 		} else {
-			fmt.Fprintf(os.Stderr, "ifit: Warning - mode %s not defined in %s - using an empty configuration\n", *Mode, *SubFN)
+			fmt.Fprintf(os.Stderr, "%sifit: Warning - mode %s not defined in %s - using an empty configuration%s\n", MiscLib.ColorYellow, *Mode, *SubFN, MiscLib.ColorReset)
 		}
 	}
 
@@ -162,7 +163,7 @@ func main() {
 		// sub[vv] = "on"
 		name, value, err := ifitlib.ParseNameValueOpt(vv)
 		if err != nil {
-			fmt.Printf("ifit: Invalid command line options. Error: %s Got: %s -- Assuming %s as name with vaolue of 'on'\n", err, vv, vv)
+			fmt.Printf("%sifit: Invalid command line options. Error: %s Got: %s -- Assuming %s as name with vaolue of 'on'%s\n", MiscLib.ColorRed, err, vv, vv, MiscLib.ColorReset)
 		}
 		godebug.Printf(db2, "Option: [%s] name=[%s] value=[%s]\n", vv, name, value)
 		sub[name] = value
@@ -209,7 +210,7 @@ func main() {
 					// fmt.Printf("in [%s]\n", in)
 					var ok bool
 					if out, ok = sub[in]; !ok {
-						fmt.Fprintf(os.Stderr, "ifit: Warning: substitution replacement for %s on line %d did not match - using empty string as replacment.", in, line_no)
+						fmt.Fprintf(os.Stderr, "%sifit: Warning: substitution replacement for %s on line %d did not match - using empty string as replacment.%s\n", MiscLib.ColorYellow, in, line_no, MiscLib.ColorReset)
 					}
 					return
 				})
@@ -229,7 +230,7 @@ func main() {
 						openedOnece[fname] = true
 						ft, err := filelib.Fopen(fname, "r") // if it is an "include" then ... open file, push with new line number
 						if err != nil {
-							fmt.Fprintf(os.Stderr, "ifit: Error opening included input file %s, Error: %s\n", fname, err)
+							fmt.Fprintf(os.Stderr, "%sifit: Error opening included input file %s, Error: %s%s\n", MiscLib.ColorRed, fname, err, MiscLib.ColorReset)
 						}
 						fStack.Push(1, 1, ft, fname) // push the file at this point
 						fi = ft
@@ -293,13 +294,13 @@ func main() {
 					x, err := ifStack.Peek()
 					godebug.Printf(db1, "db: x from Peek on stack = %s\n", godebug.SVar(x))
 					if err != nil {
-						fmt.Fprintf(os.Stderr, "ifit: Error detected on line %d - else found with no if\n", line_no)
+						fmt.Fprintf(os.Stderr, "%sifit: Error detected on line %d - else found with no if%s\n", MiscLib.ColorRed, line_no, MiscLib.ColorReset)
 					} else if x.Tag == name {
 						if !x.Nested {
 							outputOn = !x.TF
 						}
 					} else {
-						fmt.Fprintf(os.Stderr, "ifit: Error detected on line %d - mis matched else or invalid name on else, Started on line %d\n", line_no, x.S_LineNo)
+						fmt.Fprintf(os.Stderr, "%sifit: Error detected on line %d - mis matched else or invalid name on else, Started on line %d%s\n", MiscLib.ColorRed, line_no, x.S_LineNo, MiscLib.ColorReset)
 						if db3 {
 							fmt.Fprintf(os.Stderr, "ifit: x.Tag = [%s] name = [%s]\n", x.Tag, name)
 							fmt.Fprintf(os.Stderr, "ifit: line = [%s] no = %d\n", line, line_no)
@@ -316,7 +317,7 @@ func main() {
 						outputOn = x.TF
 					} else {
 						outputOn = true
-						fmt.Fprintf(os.Stderr, "ifit: Error detected on line %d - mis matched end or extra end\n", line_no)
+						fmt.Fprintf(os.Stderr, "%sifit: Error detected on line %d - mis matched end or extra end%s\n", MiscLib.ColorRed, line_no, MiscLib.ColorReset)
 					}
 					godebug.Printf(db1, "db: Found *end*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
 				}
