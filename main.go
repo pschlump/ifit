@@ -152,6 +152,7 @@ func main() {
 			}
 		} else if haveBase {
 			sub = base
+		} else if ok {
 		} else {
 			fmt.Fprintf(os.Stderr, "ifit: Warning - mode %s not defined in %s - using an empty configuration\n", *Mode, *SubFN)
 		}
