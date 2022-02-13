@@ -4,8 +4,6 @@ github.com/mattn/go-colorable v0.1.12/go.mod h1:u5H1YNBxpqRaxsYJYSkiCWKzEfiAb1Gb
 github.com/mattn/go-isatty v0.0.5/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
 github.com/mattn/go-isatty v0.0.14 h1:yVuAays6BHfxijgZPzw+3Zlu5yQgKGP2/hcQbHb7S9Y=
 github.com/mattn/go-isatty v0.0.14/go.mod h1:7GGIvUiUoEMVVmxf/4nioHXj79iQHKdU27kJ6hsGG94=
-github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b/go.mod h1:01TrycV0kFyexm33Z7vhZRXopbI8J3TDReVlkTgMUxE=
-github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d/go.mod h1:01TrycV0kFyexm33Z7vhZRXopbI8J3TDReVlkTgMUxE=
 github.com/pschlump/MiscLib v1.0.1/go.mod h1:33BegrXglROGxpDvBSciKSCc1oEKj6oRgJWD5ZEX+ZI=
 github.com/pschlump/MiscLib v1.0.3 h1:2F7ZUkWJhBTIM7XaGb8L0bzO1l7jXi/lVFTRWXpElac=
 github.com/pschlump/MiscLib v1.0.3/go.mod h1:kNxJuPVgvnv69Yt9Dr6eQgShL4kK7elSA1Nz3/G2eBg=
