@@ -12,7 +12,7 @@ for values to create a configured program.  The indented source is HTML, CSS and
 other languages then additional syntax might be needed.
 
 This program was prompted by having a project with 98% the same set of source code that really couldn't have the last 2%
-resoled at run time.  iOS/Safari required a file that made Android/Chrome break.  Thus a tool was born. 
+removed at run time.  iOS/Safari required a file that made Android/Chrome break.  Thus a tool was born. 
 
 Command Line Aruments
 ---------------------
@@ -52,11 +52,12 @@ you will not include it.
 Substitution Values
 -------------------
 
-The -s option allows you to read in a JSON file of subduction values.  These are also taken to be
+The -s option allows you to read in a JSON file of substitution values.  These are also taken to be
 sections that you would want to have turned on.
 
 Example:
 
+```
 	{
 	"__comment__": {
 			"line1":"Configuration for iOS in the ./iOS directory"
@@ -88,6 +89,7 @@ Example:
 			,"pathToAesSrpServer":"https://www.go-ftp.com/api/"
 		}
 	}
+```
 
 will substitute `$$iOS$$` for `on`.  It will also turn on the section `<!-- !! if iOS !! -->`.
 
@@ -98,34 +100,45 @@ Syntax
 
 HTML
 
+```
 	<!-- !! if NameA !! -->
 	<div id="A"></div>
 	<!-- !! end NameA !! -->
+```
 
 or
 
+```
 	<!-- !! if NameB !! 
 	<div id="B"></div>
 	!! end NameB !! -->
+```
 
 JavaScript
 
+```
 	// !! if NameA !!
 	var A = 12;
 	// !! end NameA !! 
+```
 
 CSS
+
+```
 	/* !! if NameC !! */
 	.classC {
 	}
 	/* !! end NameC !!  */
+```
 
 or
 
+```
 	/* !! if NameD !!
 	.classD {
 	}
 	!! end NameD !!  */
+```
 
 Predefined Values
 -----------------
@@ -133,7 +146,7 @@ Predefined Values
 The following predefined values are set.
 
 Name                   | Description
-:---:                  | -------------------------------------------------------------------------------------------------
+-----------------------|-------------------------------------------------------------------------------------------------
 `$$__FILE__$$`         | Current Input File Name
 `$$__LINE__$$`         | Current Line Number
 `$$__DATE__$$`         | Date in ISO, YYYY/MM/DD format
@@ -151,7 +164,7 @@ Predefined Operators
 The following predefined operators:
 
 Name           | Description
-:---:          | ---------------------------------------------------------------------------------------------------------------- 
+---------------|----------------------------------------------------------------------------------------------------------------- 
 `define`       | Define a name to be a value.  The same as placing on the command line NAME=Value or in the `-m` file.
 `undef`        | Removes a defined value
 `set_path`     | Sets the search path for include files
@@ -166,11 +179,13 @@ Please Note
 
 Tests are in a `Makefile` and run by 
 
+```
 	$ make test0
 	$ make test1
 	$ make test2
 	...
 	$ make test11
+```
 
 You should see *PASS* at the end of each successful test.
 
