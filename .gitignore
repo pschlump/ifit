@@ -5,3 +5,4 @@ ifit
 *.prof
 .old-git
 .old-pw
+,*

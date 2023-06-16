@@ -20,8 +20,8 @@ import (
 	"time"
 
 	"github.com/pschlump/MiscLib"
-	"github.com/pschlump/filelib" // Fopen
-	"github.com/pschlump/godebug" // SVar, LF etc.
+	"github.com/pschlump/dbgo"
+	"github.com/pschlump/filelib"
 	"github.com/pschlump/ifit/fstk"
 	"github.com/pschlump/ifit/ifitlib"
 	"github.com/pschlump/ifit/stk"
@@ -165,7 +165,7 @@ func main() {
 		if err != nil {
 			fmt.Printf("%sifit: Invalid command line options. Error: %s Got: %s -- Assuming %s as name with vaolue of 'on'%s\n", MiscLib.ColorRed, err, vv, vv, MiscLib.ColorReset)
 		}
-		godebug.DbPf(db2, "Option: [%s] name=[%s] value=[%s]\n", vv, name, value)
+		dbgo.DbPf(db2, "Option: [%s] name=[%s] value=[%s]\n", vv, name, value)
 		sub[name] = value
 	}
 
@@ -187,15 +187,15 @@ func main() {
 	stkNames := fStack.GetNames()
 	sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
 
-	// fmt.Printf("AT: %s\n", godebug.LF())
+	// fmt.Printf("AT: %s\n", dbgo.LF())
 	var line_no = 1
 	scanner := bufio.NewScanner(fi)
 	fStack.SetScanner(scanner)
 	for !fStack.IsEmpty() { // Loop until file stack is empty from pop.
 
-		// fmt.Printf("AT: %s\n", godebug.LF())
+		// fmt.Printf("AT: %s\n", dbgo.LF())
 		for ; scanner.Scan(); line_no++ {
-			// fmt.Printf("AT: -at top of per-line - %s\n", godebug.LF())
+			// fmt.Printf("AT: -at top of per-line - %s\n", dbgo.LF())
 			sub["__LINE__"] = fmt.Sprintf("%d", line_no)
 			line := scanner.Text()
 			if *Debug {
@@ -225,7 +225,7 @@ func main() {
 				if itemType == "include" || itemType == "include_once" {
 					fname := ifitlib.FindFile(PathOfInput, name, SearchPath)
 					if itemType == "include" || (itemType == "include_once" && !openedOnece[fname]) {
-						godebug.DbPf(db4, "Found %s [%s] - opeing file, %s\n", itemType, fname, godebug.LF())
+						dbgo.DbPf(db4, "Found %s [%s] - opeing file, %s\n", itemType, fname, dbgo.LF())
 						fStack.SetLineNo(line_no + 1)
 						openedOnece[fname] = true
 						ft, err := filelib.Fopen(fname, "r") // if it is an "include" then ... open file, push with new line number
@@ -242,7 +242,7 @@ func main() {
 						stkNames := fStack.GetNames() // set __OPENED_FILES__
 						sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
 						if db4 {
-							godebug.DbPf(db4, "include - at bottom\n")
+							dbgo.DbPf(db4, "include - at bottom\n")
 							fStack.Dump1()
 						}
 					}
@@ -263,15 +263,15 @@ func main() {
 					}
 				}
 				if itemType == "set_path" {
-					// fmt.Printf("AT: %s\n", godebug.LF())
+					// fmt.Printf("AT: %s\n", dbgo.LF())
 					set := ifitlib.GetItemSet(line[foundAt:], Pattern[pos].NthItem)
 					SearchPath = set
-					// fmt.Printf("AT: set >%s< %s\n", godebug.SVar(set), godebug.LF())
+					// fmt.Printf("AT: set >%s< %s\n", dbgo.SVar(set), dbgo.LF())
 					sub["__PATH__"] = ifitlib.CommaList(SearchPath)
-					// fmt.Printf("AT: %s\n", godebug.LF())
+					// fmt.Printf("AT: %s\n", dbgo.LF())
 				}
 				if itemType == "if" {
-					godebug.DbPf(db1, "db: Found *if*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
+					dbgo.DbPf(db1, "db: Found *if*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, dbgo.LF())
 					if outputOn {
 						_, inHash := sub[name]
 						if inHash {
@@ -287,12 +287,12 @@ func main() {
 					} else {
 						ifStack.Push(line_no, line_no, outputOn, name, true) // Push the empty frame - assume output on to start -- nested!
 					}
-					godebug.DbPf(db1, "db: Found *if*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
+					dbgo.DbPf(db1, "db: Found *if*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, dbgo.LF())
 				}
 				if itemType == "else" {
-					godebug.DbPf(db1, "db: Found *else*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
+					dbgo.DbPf(db1, "db: Found *else*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, dbgo.LF())
 					x, err := ifStack.Peek()
-					godebug.DbPf(db1, "db: x from Peek on stack = %s\n", godebug.SVar(x))
+					dbgo.DbPf(db1, "db: x from Peek on stack = %s\n", dbgo.SVar(x))
 					if err != nil {
 						fmt.Fprintf(os.Stderr, "%sifit: Error detected on line %d - else found with no if%s\n", MiscLib.ColorRed, line_no, MiscLib.ColorReset)
 					} else if x.Tag == name {
@@ -307,10 +307,10 @@ func main() {
 							ifStack.Dump1()
 						}
 					}
-					godebug.DbPf(db1, "db: Found *else*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
+					dbgo.DbPf(db1, "db: Found *else*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, dbgo.LF())
 				}
 				if itemType == "end" {
-					godebug.DbPf(db1, "db: Found *end*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
+					dbgo.DbPf(db1, "db: Found *end*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, dbgo.LF())
 					if ifStack.Length() > 1 {
 						ifStack.Pop()
 						x, _ := ifStack.Peek()
@@ -319,7 +319,7 @@ func main() {
 						outputOn = true
 						fmt.Fprintf(os.Stderr, "%sifit: Error detected on line %d - mis matched end or extra end%s\n", MiscLib.ColorRed, line_no, MiscLib.ColorReset)
 					}
-					godebug.DbPf(db1, "db: Found *end*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, godebug.LF())
+					dbgo.DbPf(db1, "db: Found *end*/bot, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, dbgo.LF())
 				}
 			} else if outputOn {
 				// fmt.Fprintf(fo, "%4s: %s\n", "++++", line)
@@ -331,12 +331,12 @@ func main() {
 			log.Fatal(err)
 		}
 
-		// fmt.Printf("AT: %s\n", godebug.LF())
+		// fmt.Printf("AT: %s\n", dbgo.LF())
 		fi.Close()
 		fStack.Pop() // Pop stack to restore previous file - loop
 
 		if !fStack.IsEmpty() { // Loop until file stack is empty from pop.
-			// fmt.Printf("AT: %s\n", godebug.LF())
+			// fmt.Printf("AT: %s\n", dbgo.LF())
 			ff, _ := fStack.Peek() // peek to get name/line no back
 
 			fi = ff.File
@@ -349,14 +349,14 @@ func main() {
 			sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
 
 			if db4 {
-				godebug.DbPf(db4, "include - after pop\n")
+				dbgo.DbPf(db4, "include - after pop\n")
 				fStack.Dump1()
 			}
 		}
 
-		// fmt.Printf("AT: %s\n", godebug.LF())
+		// fmt.Printf("AT: %s\n", dbgo.LF())
 	}
-	// fmt.Printf("AT: %s\n", godebug.LF())
+	// fmt.Printf("AT: %s\n", dbgo.LF())
 }
 
 const db1 = false // if/else/end

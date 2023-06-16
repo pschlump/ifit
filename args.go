@@ -1,7 +1,7 @@
 package main
 
 /*
-Copyright (C) Philip Schlump, 2016.
+Copyright (C) Philip Schlump, 2016-2023.
 
 MIT Licensed.
 */

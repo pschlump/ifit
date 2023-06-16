@@ -177,7 +177,7 @@ You should see *PASS* at the end of each successful test.
 LICENSE
 -------
 
-MIT Licnesed -  See LICENSE file.
+MIT Licensed -  See LICENSE file.
 
 Author
 ------

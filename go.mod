@@ -1,11 +1,11 @@
 module github.com/pschlump/ifit
 
-go 1.17
+go 1.19
 
 require (
 	github.com/pschlump/MiscLib v1.0.3
+	github.com/pschlump/dbgo v1.0.6
 	github.com/pschlump/filelib v1.0.6
-	github.com/pschlump/godebug v1.0.4
 	github.com/pschlump/json v1.12.0
 	github.com/pschlump/pw v0.4.8
 )
