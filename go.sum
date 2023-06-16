@@ -2,6 +2,8 @@ github.com/mattn/go-colorable v0.1.12 h1:jF+Du6AlPIjs2BiUiQlKOX0rt3SujHxPnksPKZb
 github.com/mattn/go-colorable v0.1.12/go.mod h1:u5H1YNBxpqRaxsYJYSkiCWKzEfiAb1Gb520KVy5xxl4=
 github.com/mattn/go-isatty v0.0.14 h1:yVuAays6BHfxijgZPzw+3Zlu5yQgKGP2/hcQbHb7S9Y=
 github.com/mattn/go-isatty v0.0.14/go.mod h1:7GGIvUiUoEMVVmxf/4nioHXj79iQHKdU27kJ6hsGG94=
+github.com/pschlump/HashStr v1.0.0 h1:HYNeEnnuqO3CDvaPbnXJ4SRGKBjgTMlaUZym5ZNeh54=
+github.com/pschlump/HashStr v1.0.0/go.mod h1:HFTaLeX8b+qWQrZ9KPRHh0isd7Ta48CT2qtUPUMCVN4=
 github.com/pschlump/MiscLib v1.0.3 h1:2F7ZUkWJhBTIM7XaGb8L0bzO1l7jXi/lVFTRWXpElac=
 github.com/pschlump/MiscLib v1.0.3/go.mod h1:kNxJuPVgvnv69Yt9Dr6eQgShL4kK7elSA1Nz3/G2eBg=
 github.com/pschlump/ansi v1.0.1 h1:NR7hBOgTV/shQwzwLmk4X/bVoUzvyIrwlB5k8wWnl7A=
@@ -12,8 +14,12 @@ github.com/pschlump/filelib v1.0.6 h1:KJdAoE+5ovlpHrfs4CTGJDXmHCEyGK+sx3CKmBajgD
 github.com/pschlump/filelib v1.0.6/go.mod h1:CxEa7t6Y1lukm2ar5iMbm1imu8fN4V52tgrWtXUqd1g=
 github.com/pschlump/json v1.12.0 h1:PjkeVEgEUg+vkHC8CfeXIG4fChev3a7gjl9wYrTnPIE=
 github.com/pschlump/json v1.12.0/go.mod h1:MyeKNxcsYS/AaCqIp6DgPdaE/4NVH49OJVCnQsRoevI=
+github.com/pschlump/pluto v0.0.7 h1:3JAnj6QtObWDEnQoZ1hO+F0kfsvUnQbZmbGej3P0bzY=
+github.com/pschlump/pluto v0.0.7/go.mod h1:N6vu2DCuy3zxw6IURe0TOvjR7m7kfsUfmAl+YqDLX8A=
 github.com/pschlump/pw v0.4.8 h1:TJ80VDXFg+HBpjEa32zIhVJq87Cy/A4hs9smgJOolvM=
 github.com/pschlump/pw v0.4.8/go.mod h1:b9Ph6vr/OAISLeEVI4N464B12BLmxXZgWzgS9mhfkfY=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6 h1:foEbQz/B0Oz6YIqu/69kfXPYeFQAuuMYFkjaqXzl5Wo=
 golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.1.0 h1:kunALQeHf1/185U1i0GOB/fy1IPRDDpuoOOqRReG57U=
+golang.org/x/sys v0.1.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=

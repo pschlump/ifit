@@ -222,7 +222,6 @@ TODO
 
 ### Add Features
 
-1. make define/undef work as a stack of Name Value like m4 - Simple
 1. Add elseif - Simple
 1. Add expressions ( iOS || Android ), ( !XDesktop ) - Medium
 1. Add `$$__noeol__$$` - Hm....

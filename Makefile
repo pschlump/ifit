@@ -25,6 +25,7 @@ install:
 .PHONY: test pre_test test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 test10 test11 test12 test14 test15
 
 test: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 test10 test11 test12 test14 test15
+	@echo PASS | color-cat -c green
 
 pre_test:
 	go build

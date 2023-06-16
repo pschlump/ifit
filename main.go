@@ -1,7 +1,7 @@
 package main
 
 /*
-Copyright (C) Philip Schlump, 2016.
+Copyright (C) Philip Schlump, 2016-2023.
 
 MIT Licensed.
 */
@@ -25,7 +25,20 @@ import (
 	"github.com/pschlump/ifit/fstk"
 	"github.com/pschlump/ifit/ifitlib"
 	"github.com/pschlump/ifit/stk"
+	hash_tab "github.com/pschlump/pluto/hash_tab_dll"
 )
+
+// hash_tab "github.com/pschlump/pluto/hash_tab_dll"
+// xyzzy TODO - this is the "define" process
+// github.com/pschlump/pluto/hash_tab_dll/hash_tab.go
+// package hash_tab
+// func (tt *HashTab[T]) Insert(item *T) {
+type DefinedItem struct {
+	Name            string
+	Value           string
+	DefinedLineNo   int
+	DefinedFileName string
+}
 
 type PattType struct {
 	Pat      string
@@ -75,6 +88,7 @@ var Pattern = []PattType{
 	PattType{"!! undef ", 3, "undef"},
 }
 
+// HashIfItTag returns true if the pasrsing is such that the line contains a tag.
 func HasIfItTag(s string) (patternNo int, foundAt int) {
 	for ii, vv := range Pattern {
 		if at := strings.Index(s, vv.Pat); at >= 0 {
@@ -130,6 +144,11 @@ func main() {
 
 	sub_top := make(map[string]map[string]string)
 	sub := make(map[string]string)
+
+	// xyzzy new ST using hash
+	// hash_tab.NewHashTab()
+	ht := hash_tab.NewHashTab[DefinedItem](7)
+
 	if *SubFN != "" {
 		s, err := ioutil.ReadFile(*SubFN)
 		if err != nil {
@@ -141,19 +160,60 @@ func main() {
 			fmt.Fprintf(os.Stderr, "%sError: parsing JSON file %s, Error: %s%s\n", MiscLib.ColorRed, *SubFN, err, MiscLib.ColorReset)
 			os.Exit(1)
 		}
+
 		var ok bool
-		// xyzzy - this is the place to add $base$
-		base, haveBase := sub_top["$base$"]
+
+		base, haveBase := sub_top["$base$"] // this is the place to add $base$
 		sub, ok = sub_top[*Mode]
+
 		if haveBase && ok {
+			for name, val := range sub {
+				// define values from the JSON into the symbol table.
+				if oldSt {
+					// sub[name] = val
+				} else {
+					// xyzzy new ST Insert
+					ht.Insert(&DefinedItem{Name: name, Value: val})
+				}
+			}
 			for name, val := range base {
 				if _, itemOk := sub[name]; !itemOk {
-					sub[name] = val
+					// define values from the JSON into the symbol table.
+					if oldSt {
+						sub[name] = val
+					} else {
+						// xyzzy new ST Insert
+						ht.Insert(&DefinedItem{Name: name, Value: val})
+					}
 				}
 			}
 		} else if haveBase {
-			sub = base
+			if oldSt {
+				sub = base
+			} else {
+				for name, val := range base {
+					// define values from the JSON into the symbol table.
+					if oldSt {
+						// sub[name] = val
+					} else {
+						// xyzzy new ST Insert
+						ht.Insert(&DefinedItem{Name: name, Value: val})
+					}
+				}
+			}
 		} else if ok {
+			if oldSt {
+			} else {
+				for name, val := range base {
+					// define values from the JSON into the symbol table.
+					if oldSt {
+						// sub[name] = val
+					} else {
+						// xyzzy new ST Insert
+						ht.Insert(&DefinedItem{Name: name, Value: val})
+					}
+				}
+			}
 		} else {
 			fmt.Fprintf(os.Stderr, "%sifit: Warning - mode %s not defined in %s - using an empty configuration%s\n", MiscLib.ColorYellow, *Mode, *SubFN, MiscLib.ColorReset)
 		}
@@ -166,28 +226,51 @@ func main() {
 			fmt.Printf("%sifit: Invalid command line options. Error: %s Got: %s -- Assuming %s as name with vaolue of 'on'%s\n", MiscLib.ColorRed, err, vv, vv, MiscLib.ColorReset)
 		}
 		dbgo.DbPf(db2, "Option: [%s] name=[%s] value=[%s]\n", vv, name, value)
-		sub[name] = value
+		if oldSt {
+			sub[name] = value
+		} else {
+			ht.Insert(&DefinedItem{Name: name, Value: value})
+		}
 	}
 
 	outputOn := true
 	ifStack := stk.NewNameStackType()               // Create the stack
 	ifStack.Push(1, 1, outputOn, "**main**", false) // Push the empty frame - assume output on to start
 
-	sub["__FILE__"] = *InputFN
-	now := time.Now()
-	sub["__DATE__"] = now.Format("2006-01-02")
-	sub["__TIME__"] = now.Format("15:04:05")
-	sub["__TSTAMP__"] = now.Format(time.RFC3339)
-	sub["__Mode__"] = *Mode
-	sub["__Output__"] = *OutputFN
-	strs := ifitlib.KeysSorted(sub)
-	sort.Strings(strs)
-	sub["__TRUE_ITEMS__"] = ifitlib.CommaList(strs)
-	sub["__PATH__"] = ifitlib.CommaList(SearchPath)
-	stkNames := fStack.GetNames()
-	sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
+	// Predefined global values.
+	if oldSt {
+		sub["__FILE__"] = *InputFN
+		now := time.Now()
+		sub["__DATE__"] = now.Format("2006-01-02")
+		sub["__TIME__"] = now.Format("15:04:05")
+		sub["__TSTAMP__"] = now.Format(time.RFC3339)
+		sub["__Mode__"] = *Mode
+		sub["__Output__"] = *OutputFN
+		strs := ifitlib.KeysSorted(sub)
+		sort.Strings(strs)
+		sub["__TRUE_ITEMS__"] = ifitlib.CommaList(strs)
+		sub["__PATH__"] = ifitlib.CommaList(SearchPath)
+		stkNames := fStack.GetNames()
+		sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
+	} else {
+		ht.Insert(&DefinedItem{Name: "__FILE__", Value: *InputFN})
+		now := time.Now()
+		ht.Insert(&DefinedItem{Name: "__DATE__", Value: now.Format("2006-01-02")})
+		ht.Insert(&DefinedItem{Name: "__TIME__", Value: now.Format("15:04:05")})
+		ht.Insert(&DefinedItem{Name: "__TSTAMP__", Value: now.Format(time.RFC3339)})
+		ht.Insert(&DefinedItem{Name: "__Mode__", Value: *Mode})
+		ht.Insert(&DefinedItem{Name: "__Output__", Value: *OutputFN})
+		strs := ifitlib.KeysSorted(sub)
+		sort.Strings(strs)
+		ht.Insert(&DefinedItem{Name: "__TRUE_ITEMS__", Value: ifitlib.CommaList(strs)})
+		ht.Insert(&DefinedItem{Name: "__PATH__", Value: ifitlib.CommaList(SearchPath)})
+		stkNames := fStack.GetNames()
+		ht.Insert(&DefinedItem{Name: "__OPENED_FILES__", Value: ifitlib.CommaList(stkNames)})
+	}
 
-	// fmt.Printf("AT: %s\n", dbgo.LF())
+	if db8 {
+		dbgo.Printf("%(cyan)%(LF)")
+	}
 	var line_no = 1
 	scanner := bufio.NewScanner(fi)
 	fStack.SetScanner(scanner)
@@ -196,7 +279,11 @@ func main() {
 		// fmt.Printf("AT: %s\n", dbgo.LF())
 		for ; scanner.Scan(); line_no++ {
 			// fmt.Printf("AT: -at top of per-line - %s\n", dbgo.LF())
-			sub["__LINE__"] = fmt.Sprintf("%d", line_no)
+			if oldSt {
+				sub["__LINE__"] = fmt.Sprintf("%d", line_no)
+			} else {
+				ht.Insert(&DefinedItem{Name: "__LINE__", Value: fmt.Sprintf("%d", line_no)})
+			}
 			line := scanner.Text()
 			if *Debug {
 				fmt.Fprintf(fo, "%4d: %s\n", line_no, line)
@@ -208,9 +295,15 @@ func main() {
 				line = hasSub.ReplaceAllStringFunc(line, func(in string) (out string) {
 					in = in[2 : len(in)-2]
 					// fmt.Printf("in [%s]\n", in)
-					var ok bool
-					if out, ok = sub[in]; !ok {
-						fmt.Fprintf(os.Stderr, "%sifit: Warning: substitution replacement for %s on line %d did not match - using empty string as replacment.%s\n", MiscLib.ColorYellow, in, line_no, MiscLib.ColorReset)
+					if oldSt {
+						var ok bool
+						if out, ok = sub[in]; !ok {
+							fmt.Fprintf(os.Stderr, "%sifit: Warning: substitution replacement for %s on line %d did not match - using empty string as replacment.%s\n", MiscLib.ColorYellow, in, line_no, MiscLib.ColorReset)
+						}
+					} else {
+						if ok := ht.ItemExists(&DefinedItem{Name: in}); !ok {
+							fmt.Fprintf(os.Stderr, "%sifit: Warning: substitution replacement for %s on line %d did not match - using empty string as replacment.%s\n", MiscLib.ColorYellow, in, line_no, MiscLib.ColorReset)
+						}
 					}
 					return
 				})
@@ -237,10 +330,17 @@ func main() {
 						line_no = 0
 						scanner = bufio.NewScanner(fi)
 						fStack.SetScanner(scanner)
-						sub["__FILE__"] = fname
-						sub["__LINE__"] = fmt.Sprintf("%d", 1)
-						stkNames := fStack.GetNames() // set __OPENED_FILES__
-						sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
+						if oldSt {
+							sub["__FILE__"] = fname
+							sub["__LINE__"] = fmt.Sprintf("%d", 1)
+							stkNames := fStack.GetNames() // set __OPENED_FILES__
+							sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
+						} else {
+							ht.Insert(&DefinedItem{Name: "__FILE__", Value: fname})
+							ht.Insert(&DefinedItem{Name: "__LINE__", Value: fmt.Sprintf("%d", 1)})
+							stkNames := fStack.GetNames() // set __OPENED_FILES__
+							ht.Insert(&DefinedItem{Name: "__OPENED_FILES__", Value: ifitlib.CommaList(stkNames)})
+						}
 						if db4 {
 							dbgo.DbPf(db4, "include - at bottom\n")
 							fStack.Dump1()
@@ -250,16 +350,30 @@ func main() {
 				if itemType == "define" {
 					set := ifitlib.GetItemSet(line[foundAt:], Pattern[pos].NthItem)
 					if len(set) >= 2 {
-						sub[set[0]] = set[1]
+						if oldSt {
+							sub[set[0]] = set[1]
+						} else {
+							ht.Insert(&DefinedItem{Name: set[0], Value: set[1]})
+						}
+						// xyzzy TODO - this is the "define" process
+						// ht.Set ( Name, Value )
 					} else if len(set) >= 1 {
-						sub[set[0]] = "on"
+						if oldSt {
+							sub[set[0]] = "on"
+						} else {
+							ht.Insert(&DefinedItem{Name: set[0], Value: "on"})
+						}
 					} else {
 						fmt.Printf("ifit: Syntax error, define needs a name to define, line %d\n", line_no)
 					}
 				}
 				if itemType == "undef" {
 					if _, ok := sub[name]; ok {
-						delete(sub, name)
+						if oldSt {
+							delete(sub, name)
+						} else {
+							ht.Delete(&DefinedItem{Name: name})
+						}
 					}
 				}
 				if itemType == "set_path" {
@@ -267,13 +381,22 @@ func main() {
 					set := ifitlib.GetItemSet(line[foundAt:], Pattern[pos].NthItem)
 					SearchPath = set
 					// fmt.Printf("AT: set >%s< %s\n", dbgo.SVar(set), dbgo.LF())
-					sub["__PATH__"] = ifitlib.CommaList(SearchPath)
+					if oldSt {
+						sub["__PATH__"] = ifitlib.CommaList(SearchPath)
+					} else {
+						ht.Insert(&DefinedItem{Name: "__PATH__", Value: ifitlib.CommaList(SearchPath)})
+					}
 					// fmt.Printf("AT: %s\n", dbgo.LF())
 				}
 				if itemType == "if" {
 					dbgo.DbPf(db1, "db: Found *if*/top, stack=%d, outputOn=%v, line_no=%d, %s\n", ifStack.Length(), outputOn, line_no, dbgo.LF())
 					if outputOn {
-						_, inHash := sub[name]
+						var inHash bool
+						if oldSt {
+							_, inHash = sub[name]
+						} else {
+							inHash = ht.ItemExists(&DefinedItem{Name: name})
+						}
 						if inHash {
 							if *Debug {
 								fmt.Printf("Found in array %s\n", name)
@@ -341,12 +464,23 @@ func main() {
 
 			fi = ff.File
 			scanner = ff.Scanner
-			sub["__FILE__"] = ff.Name
-			sub["__LINE__"] = fmt.Sprintf("%d", ff.C_LineNo)
+
+			if oldSt {
+				sub["__FILE__"] = ff.Name
+				sub["__LINE__"] = fmt.Sprintf("%d", ff.C_LineNo)
+			} else {
+				ht.Insert(&DefinedItem{Name: "__FILE__", Value: ff.Name})
+				ht.Insert(&DefinedItem{Name: "__LINE__", Value: fmt.Sprintf("%d", ff.C_LineNo)})
+			}
 			line_no = ff.C_LineNo
 
 			stkNames := fStack.GetNames() // set __OPENED_FILES__
-			sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
+
+			if oldSt {
+				sub["__OPENED_FILES__"] = ifitlib.CommaList(stkNames)
+			} else {
+				ht.Insert(&DefinedItem{Name: "__OPENED_FILES__", Value: ifitlib.CommaList(stkNames)})
+			}
 
 			if db4 {
 				dbgo.DbPf(db4, "include - after pop\n")
@@ -363,3 +497,8 @@ const db1 = false // if/else/end
 const db2 = false // command line name=value processing
 const db3 = false // if/else/end - more details
 const db4 = false // include related
+
+const oldSt = true // true => old define table,  false => new generics hash table.
+const db8 = false
+
+/* vim: set noai ts=4 sw=4: */

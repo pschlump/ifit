@@ -166,3 +166,5 @@ func Exists(name string) bool {
 	}
 	return true
 }
+
+/* vim: set noai ts=4 sw=4: */
