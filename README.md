@@ -27,25 +27,33 @@ Argument | Long       | Description
 
 Anny additional arguments are takes as turning on that defined section of code.  For example:
 
+```
 	<!-- !! if IOS_SECTION !! -->
 		this section of HTML is for my IOS version only!
 	<!-- !! else IOS_SECTION !! -->
 		this section of HTML is for my non-IOS version (NOT IOS)!
 	<!-- !! end IOS_SECTION !! -->
+```
 
 or
 
+```
 	<!-- !! if IOS_SECTION !! -->
 		this section of HTML is for my IOS version only!
 	<!-- !! end IOS_SECTION !! -->
+```
 
 and you run
 
+```
 	$ ifit -i input.html -o output.html IOS_SECTION OtherSection
+```
 
 then you will include the IOS_SECTION.  If you run
 
+```
 	$ ifit -i input.html -o output.html ANDROID_SECTION OtherSection
+```
 
 you will not include it.
 
@@ -58,7 +66,7 @@ sections that you would want to have turned on.
 Example:
 
 ```
-	{
+{
 	"__comment__": {
 			"line1":"Configuration for iOS in the ./iOS directory"
 			,"line2":"Copyright (C) Philip Schlump, 2016."
@@ -88,7 +96,7 @@ Example:
 			,"requestMode":"POST"
 			,"pathToAesSrpServer":"https://www.go-ftp.com/api/"
 		}
-	}
+}
 ```
 
 will substitute `$$iOS$$` for `on`.  It will also turn on the section `<!-- !! if iOS !! -->`.
@@ -101,43 +109,43 @@ Syntax
 HTML
 
 ```
-	<!-- !! if NameA !! -->
-	<div id="A"></div>
-	<!-- !! end NameA !! -->
+<!-- !! if NameA !! -->
+<div id="A"></div>
+<!-- !! end NameA !! -->
 ```
 
 or
 
 ```
-	<!-- !! if NameB !! 
-	<div id="B"></div>
-	!! end NameB !! -->
+<!-- !! if NameB !! 
+<div id="B"></div>
+!! end NameB !! -->
 ```
 
 JavaScript
 
 ```
-	// !! if NameA !!
-	var A = 12;
-	// !! end NameA !! 
+// !! if NameA !!
+var A = 12;
+// !! end NameA !! 
 ```
 
 CSS
 
 ```
-	/* !! if NameC !! */
-	.classC {
-	}
-	/* !! end NameC !!  */
+/* !! if NameC !! */
+.classC {
+}
+/* !! end NameC !!  */
 ```
 
 or
 
 ```
-	/* !! if NameD !!
-	.classD {
-	}
-	!! end NameD !!  */
+/* !! if NameD !!
+.classD {
+}
+!! end NameD !!  */
 ```
 
 Predefined Values
