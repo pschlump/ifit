@@ -25,6 +25,7 @@ import (
 	"github.com/pschlump/ifit/fstk"
 	"github.com/pschlump/ifit/ifitlib"
 	"github.com/pschlump/ifit/stk"
+	"github.com/pschlump/pluto/dll"
 	hash_tab "github.com/pschlump/pluto/hash_tab_dll"
 )
 
@@ -47,11 +48,7 @@ func init() {
 	flag.BoolVar(Debug, "D", false, "Debug Flag")
 }
 
-// hash_tab "github.com/pschlump/pluto/hash_tab_dll"
-// xyzzy TODO - this is the "define" process
-// github.com/pschlump/pluto/hash_tab_dll/hash_tab.go
-// package hash_tab
-// func (tt *HashTab[T]) Insert(item *T) {
+// This is the data that is kept on a item in the symbol table.
 type DefinedItem struct {
 	Name            string
 	Value           string
@@ -166,7 +163,7 @@ func main() {
 	sub_top := make(map[string]map[string]string)
 	sub := make(map[string]string)
 
-	dbgo.Printf("%(cyan)%(LF)\n")
+	//	dbgo.Printf("%(cyan)%(LF)\n")
 
 	// xyzzy new ST using hash
 	// hash_tab.NewHashTab()
@@ -174,7 +171,7 @@ func main() {
 	ht := hash_tab.NewHashTab[DefinedItem](7879)
 
 	if *SubFN != "" {
-		dbgo.Printf("%(cyan)%(LF)\n")
+		// dbgo.Printf("%(cyan)%(LF)\n")
 		s, err := ioutil.ReadFile(*SubFN)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%sError: opening substitution JSON file %s, Error: %s%s\n", MiscLib.ColorRed, *SubFN, err, MiscLib.ColorReset)
@@ -192,7 +189,7 @@ func main() {
 		sub, ok = sub_top[*Mode]
 
 		if haveBase && ok {
-			dbgo.Printf("%(cyan)%(LF)\n")
+			//			dbgo.Printf("%(cyan)%(LF)\n")
 			for name, val := range sub {
 				// define values from the JSON into the symbol table.
 				if oldSt {
@@ -214,7 +211,7 @@ func main() {
 				}
 			}
 		} else if haveBase {
-			dbgo.Printf("%(cyan)%(LF)\n")
+			//			dbgo.Printf("%(cyan)%(LF)\n")
 			if oldSt {
 				sub = base
 			} else {
@@ -229,38 +226,24 @@ func main() {
 				}
 			}
 		} else if ok {
-			dbgo.Printf("%(cyan)%(LF)\n")
+			//			dbgo.Printf("%(cyan)%(LF)\n")
 			if oldSt {
 			} else {
 				for name, val := range sub {
 					// define values from the JSON into the symbol table.
 					if oldSt {
-						dbgo.Printf("%(red)%(LF)\n")
+						//						dbgo.Printf("%(red)%(LF)\n")
 						// sub[name] = val
 					} else {
-						dbgo.Printf("%(green)%(LF)\n")
+						//						dbgo.Printf("%(green)%(LF)\n")
 						// xyzzy new ST Insert
 						ht.Insert(&DefinedItem{Name: name, Value: val})
 					}
 				}
 			}
 		} else {
-			dbgo.Printf("%(cyan)%(LF)\n")
+			//			dbgo.Printf("%(cyan)%(LF)\n")
 			fmt.Fprintf(os.Stderr, "%sifit: Warning - mode %s not defined in %s - using an empty configuration%s\n", MiscLib.ColorYellow, *Mode, *SubFN, MiscLib.ColorReset)
-		}
-	}
-
-	dbgo.Printf("%(cyan)%(LF)\n")
-	// xyzzy - Dump Symbol Table
-	if dbDumpSymbolTable {
-		if oldSt {
-			for k, v := range sub {
-				fmt.Printf("%20s | %20s\n", k, v)
-			}
-		} else {
-			fmt.Printf("---- Dump of table ----\n")
-			ht.Dump(os.Stdout)
-			fmt.Printf("---- end ----\n")
 		}
 	}
 
@@ -305,7 +288,24 @@ func main() {
 		ht.Insert(&DefinedItem{Name: "__TSTAMP__", Value: now.Format(time.RFC3339)})
 		ht.Insert(&DefinedItem{Name: "__Mode__", Value: *Mode})
 		ht.Insert(&DefinedItem{Name: "__Output__", Value: *OutputFN})
-		strs := ifitlib.KeysSorted(sub)
+
+		strs := make([]string, 0, ht.Length())
+
+		var fx dll.ApplyFunction[DefinedItem]
+		fx = func(pos int, data DefinedItem, userData interface{}) bool {
+			ud, ok := userData.(*[]string)
+			if !ok {
+				fmt.Printf("Invalid type: %T\n", userData)
+				return false
+			}
+			*ud = append(*ud, data.Name)
+			return false
+		}
+		ht.Walk(fx, &strs)
+
+		// xyzzy - TODO must walk table and collect all "keys"
+		// func (ns *HashTab[T]) Walk(fx dll.ApplyFunction[T], userData interface{}) (rv *dll.DllElement[T], pos int) {
+		// From DLL: type ApplyFunction[T comparable.Equality] func(pos int, data T, userData interface{}) bool
 		sort.Strings(strs)
 		ht.Insert(&DefinedItem{Name: "__TRUE_ITEMS__", Value: ifitlib.CommaList(strs)})
 		ht.Insert(&DefinedItem{Name: "__PATH__", Value: ifitlib.CommaList(SearchPath)})
@@ -314,6 +314,20 @@ func main() {
 	}
 
 	if db8 {
+		dbgo.Printf("%(cyan)%(LF)\n")
+		// xyzzy - Dump Symbol Table
+		if dbDumpSymbolTable {
+			if oldSt {
+				for k, v := range sub {
+					fmt.Printf("%20s | %20s\n", k, v)
+				}
+			} else {
+				fmt.Printf("---- Dump of table ----\n")
+				ht.Dump(os.Stdout)
+				fmt.Printf("---- end ----\n")
+			}
+		}
+
 		dbgo.Printf("%(cyan)%(LF)\n")
 	}
 	var line_no = 1
