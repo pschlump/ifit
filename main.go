@@ -28,6 +28,25 @@ import (
 	hash_tab "github.com/pschlump/pluto/hash_tab_dll"
 )
 
+// fopen
+// Modifed from: "encoding/json"
+// word parser
+
+var InputFN = flag.String("input", "", "Input Meta File")  // 0
+var OutputFN = flag.String("output", "", "Output Code")    // 1
+var SubFN = flag.String("sub", "", "Substution Values")    // 2
+var Mode = flag.String("mode", "", "Mode Values")          // 3
+var Debug = flag.Bool("debug", false, "Debug Flag")        // 4
+var OldST = flag.Bool("old-st", false, "Old Symbol Table") // 5
+
+func init() {
+	flag.StringVar(InputFN, "i", "", "Input Meta File")
+	flag.StringVar(OutputFN, "o", "", "Output Code")
+	flag.StringVar(SubFN, "s", "", "Substution Values")
+	flag.StringVar(Mode, "m", "", "Mode Values")
+	flag.BoolVar(Debug, "D", false, "Debug Flag")
+}
+
 // hash_tab "github.com/pschlump/pluto/hash_tab_dll"
 // xyzzy TODO - this is the "define" process
 // github.com/pschlump/pluto/hash_tab_dll/hash_tab.go
@@ -117,6 +136,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	oldSt = *OldST
+
 	fStack := fstk.NewFileStackType()
 
 	fi, err := filelib.Fopen(*InputFN, "r")
@@ -145,11 +166,15 @@ func main() {
 	sub_top := make(map[string]map[string]string)
 	sub := make(map[string]string)
 
+	dbgo.Printf("%(cyan)%(LF)\n")
+
 	// xyzzy new ST using hash
 	// hash_tab.NewHashTab()
-	ht := hash_tab.NewHashTab[DefinedItem](7)
+	// ht := hash_tab.NewHashTab[DefinedItem](7)				// D
+	ht := hash_tab.NewHashTab[DefinedItem](7879)
 
 	if *SubFN != "" {
+		dbgo.Printf("%(cyan)%(LF)\n")
 		s, err := ioutil.ReadFile(*SubFN)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%sError: opening substitution JSON file %s, Error: %s%s\n", MiscLib.ColorRed, *SubFN, err, MiscLib.ColorReset)
@@ -167,6 +192,7 @@ func main() {
 		sub, ok = sub_top[*Mode]
 
 		if haveBase && ok {
+			dbgo.Printf("%(cyan)%(LF)\n")
 			for name, val := range sub {
 				// define values from the JSON into the symbol table.
 				if oldSt {
@@ -188,6 +214,7 @@ func main() {
 				}
 			}
 		} else if haveBase {
+			dbgo.Printf("%(cyan)%(LF)\n")
 			if oldSt {
 				sub = base
 			} else {
@@ -202,20 +229,38 @@ func main() {
 				}
 			}
 		} else if ok {
+			dbgo.Printf("%(cyan)%(LF)\n")
 			if oldSt {
 			} else {
-				for name, val := range base {
+				for name, val := range sub {
 					// define values from the JSON into the symbol table.
 					if oldSt {
+						dbgo.Printf("%(red)%(LF)\n")
 						// sub[name] = val
 					} else {
+						dbgo.Printf("%(green)%(LF)\n")
 						// xyzzy new ST Insert
 						ht.Insert(&DefinedItem{Name: name, Value: val})
 					}
 				}
 			}
 		} else {
+			dbgo.Printf("%(cyan)%(LF)\n")
 			fmt.Fprintf(os.Stderr, "%sifit: Warning - mode %s not defined in %s - using an empty configuration%s\n", MiscLib.ColorYellow, *Mode, *SubFN, MiscLib.ColorReset)
+		}
+	}
+
+	dbgo.Printf("%(cyan)%(LF)\n")
+	// xyzzy - Dump Symbol Table
+	if dbDumpSymbolTable {
+		if oldSt {
+			for k, v := range sub {
+				fmt.Printf("%20s | %20s\n", k, v)
+			}
+		} else {
+			fmt.Printf("---- Dump of table ----\n")
+			ht.Dump(os.Stdout)
+			fmt.Printf("---- end ----\n")
 		}
 	}
 
@@ -269,7 +314,7 @@ func main() {
 	}
 
 	if db8 {
-		dbgo.Printf("%(cyan)%(LF)")
+		dbgo.Printf("%(cyan)%(LF)\n")
 	}
 	var line_no = 1
 	scanner := bufio.NewScanner(fi)
@@ -301,8 +346,14 @@ func main() {
 							fmt.Fprintf(os.Stderr, "%sifit: Warning: substitution replacement for %s on line %d did not match - using empty string as replacment.%s\n", MiscLib.ColorYellow, in, line_no, MiscLib.ColorReset)
 						}
 					} else {
-						if ok := ht.ItemExists(&DefinedItem{Name: in}); !ok {
+						if val := ht.Search(&DefinedItem{Name: in}); val == nil {
 							fmt.Fprintf(os.Stderr, "%sifit: Warning: substitution replacement for %s on line %d did not match - using empty string as replacment.%s\n", MiscLib.ColorYellow, in, line_no, MiscLib.ColorReset)
+						} else {
+							item := val.Data
+							if db7 {
+								dbgo.Printf("Found ->%s<-\n", dbgo.SVarI(item))
+							}
+							out = item.Value
 						}
 					}
 					return
@@ -498,7 +549,15 @@ const db2 = false // command line name=value processing
 const db3 = false // if/else/end - more details
 const db4 = false // include related
 
-const oldSt = true // true => old define table,  false => new generics hash table.
+const db7 = false
+
+var oldSt = true // true => old define table,  false => new generics hash table.
 const db8 = false
+
+var dbDumpSymbolTable = false
+
+/*
+
+ */
 
 /* vim: set noai ts=4 sw=4: */

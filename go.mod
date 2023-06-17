@@ -10,6 +10,8 @@ require (
 	github.com/pschlump/pw v0.4.8
 )
 
+require golang.org/x/exp v0.0.0-20230304125523-9ff063c70017 // indirect
+
 require (
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect

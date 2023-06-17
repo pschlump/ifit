@@ -160,6 +160,7 @@ test14:
 	$(DIFF) ./out/test14.out ./ref/test14.out
 	./ifit -m test -i test/inc.14 -o ./out/test14a.out -s sub14.json 
 	$(DIFF) ./out/test14a.out ./ref/test14a.out
+	echo PASS
 
 test15:
 	echo PASS
