@@ -433,12 +433,12 @@ func main() {
 					}
 				}
 				if itemType == "undef" {
-					if _, ok := sub[name]; ok {
-						if oldSt {
+					if oldSt {
+						if _, ok := sub[name]; ok {
 							delete(sub, name)
-						} else {
-							ht.Delete(&DefinedItem{Name: name})
 						}
+					} else {
+						ht.Delete(&DefinedItem{Name: name})
 					}
 				}
 				if itemType == "set_path" {
